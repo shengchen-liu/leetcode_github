@@ -7,29 +7,26 @@
 
 class Solution:
     def levelOrderBottom(self, root: TreeNode) -> List[List[int]]:
-        results = []
+        result = []
         if root == None:
-            return results
+            return result
+        queue = []
+        # enqueue
+        queue.append(root)
         
-        # build a queue 
-        q = [root]
-        
-        while len(q) != 0:
-            # each layer
-            size = len(q)
-            layer_result = []
+        while(len(queue)!=0):
+            size = len(queue)
+            layer = []
             for i in range(size):
-                # deque
-                u = q.pop(0)
-                layer_result.append(u.val)
-                if (u.left != None):
-                    q.append(u.left)
-                if (u.right != None):
-                    q.append(u.right)                    
-            results.append(layer_result)
-        results.reverse()
-        return results
-                    
-                
+                # dequeue
+                head = queue.pop(0)
+                if head.left != None:
+                    queue.append(head.left)
+                if head.right != None:
+                    queue.append(head.right)
+                layer.append(head.val)
         
+            result.insert(0, layer)
+        return result
+    
         
