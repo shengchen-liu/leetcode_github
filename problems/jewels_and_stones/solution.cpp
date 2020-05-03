@@ -1,11 +1,12 @@
 class Solution {
 public:
     int numJewelsInStones(string J, string S) {
+        unordered_set<char> jewels;
+        for (char j : J) jewels.insert(j);
+        
         int res = 0;
-        unordered_set<char> s;
-        for (char c : J) s.insert(c);
-        for (char c : S) {
-            if (s.count(c)) ++res;
+        for (char s : S) {
+            if (jewels.count(s)) ++res;
         }
         return res;
     }
