@@ -3,21 +3,25 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
-    void reorderList(ListNode *head) {
+    void reorderList(ListNode* head) {
         if (!head || !head->next || !head->next->next) return;
         ListNode *fast = head, *slow = head;
-        while (fast->next && fast->next->next) {
+        while (fast && fast->next) {
             slow = slow->next;
             fast = fast->next->next;
         }
         ListNode *mid = slow->next;
         slow->next = NULL;
-        ListNode *last = mid, *pre = NULL;
+        ListNode *last = mid;
+        ListNode *pre = NULL;
+        // REVERSE SECOND HALF
         while (last) {
             ListNode *next = last->next;
             last->next = pre;
