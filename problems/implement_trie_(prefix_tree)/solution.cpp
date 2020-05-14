@@ -2,34 +2,41 @@ class TrieNode {
 public:
     TrieNode *child[26];
     bool isWord;
-    TrieNode(): isWord(false) {
+    TrieNode() : isWord(false) {
         for (auto &a : child) a = nullptr;
     }
 };
 
 class Trie {
 public:
+    /** Initialize your data structure here. */
     Trie() {
-        root = new TrieNode();
+        root = new TrieNode();        
     }
-    void insert(string s) {
+    
+    /** Inserts a word into the trie. */
+    void insert(string word) {
         TrieNode *p = root;
-        for (auto &a : s) {
+        for (auto &a : word) {
             int i = a - 'a';
             if (!p->child[i]) p->child[i] = new TrieNode();
             p = p->child[i];
         }
         p->isWord = true;
     }
-    bool search(string key) {
+    
+    /** Returns if the word is in the trie. */
+    bool search(string word) {
         TrieNode *p = root;
-        for (auto &a : key) {
+        for (auto &a : word) {
             int i = a - 'a';
             if (!p->child[i]) return false;
             p = p->child[i];
         }
         return p->isWord;
     }
+    
+    /** Returns if there is any word in the trie that starts with the given prefix. */
     bool startsWith(string prefix) {
         TrieNode *p = root;
         for (auto &a : prefix) {
@@ -40,7 +47,7 @@ public:
         return true;
     }
     
-private:
+private: 
     TrieNode* root;
 };
 
