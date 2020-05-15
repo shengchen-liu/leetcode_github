@@ -3,7 +3,9 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
@@ -12,28 +14,25 @@ public:
         if (!head || !head->next) return head;
         ListNode* slow = head;
         ListNode* fast = head;
-        ListNode* pre;
-        while (fast && fast->next){
+        ListNode* pre = head;
+        while (fast && fast->next) {
             pre = slow;
             slow = slow->next;
             fast = fast->next->next;
         }
         pre->next = NULL;
         return merge(sortList(head), sortList(slow));
-        
     }
-    ListNode* merge(ListNode* leftNode, ListNode* rightNode) {
-        if (!leftNode) return rightNode;
-        if (!rightNode) return leftNode;
-        
-        if (leftNode->val < rightNode->val){
-            leftNode->next = merge(leftNode->next, rightNode);
-            return leftNode;
+    
+    ListNode* merge(ListNode *l1, ListNode *l2) {
+        if (!l1) return l2;
+        if (!l2) return l1;
+        if (l1->val < l2->val) {
+            l1->next = merge(l1->next, l2);
+            return l1;
+        } else {
+            l2->next = merge(l1, l2->next);
+            return l2;
         }
-        else {
-            rightNode->next = merge(leftNode, rightNode->next);
-            return rightNode;
-        }
-
     }
 };
