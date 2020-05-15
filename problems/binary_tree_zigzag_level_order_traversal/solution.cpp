@@ -4,44 +4,33 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
-        # define a queue
-        if(root==NULL) return {};
-        // queue<TreeNode*> q{{root}};
-        vector<TreeNode*> q;
-        q.push_back(root);
+        if (!root) return {};
         vector<vector<int>> res;
-        int count = 0; // number of layers
+        queue<TreeNode*> q;
         bool leftToRight = true;
-        
-        while (!q.empty()){
-            int size = q.size();
-            vector<int> layer(size); 
-            for(int i = 0; i < size; i++){
-                // dequee
-                TreeNode* head = q.front();
-                q.erase(q.begin()); // remove the first element 
-                int index = leftToRight ? i : (size - i -1);
-                layer[index] = head -> val;
-                // add children to the queue
-                if(head->left){
-                    q.push_back(head->left);
-                }
-                if(head->right){
-                    q.push_back(head->right);
-                }
+        q.push(root);
+        while (!q.empty()) {
+            int n = q.size();
+            vector<int> layer(n);
+            for (int i = 0; i < n; ++i) {
+                TreeNode* node = q.front();
+                q.pop();
+                int idx = leftToRight ? i : (n - 1 - i);
+                layer[idx] = node->val; //[1], [3, 2], [4, 5]
+                if (node->left) q.push(node->left);
+                if (node->right) q.push(node->right);
             }
             leftToRight = !leftToRight;
             res.push_back(layer);
-            count++;
         }
         return res;
-        
     }
-
 };
