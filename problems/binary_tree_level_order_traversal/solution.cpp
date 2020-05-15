@@ -4,31 +4,35 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     vector<vector<int>> levelOrder(TreeNode* root) {
-        if(!root) return{};
-        TreeNode * head;
-        queue<TreeNode*> q{{root}};
-        vector<vector<int>> result;
-        
-        while(!q.empty()){
-            // layer operation
+        if (!root) return {};
+        vector<vector<int>> res;
+        queue<TreeNode*> q;
+        // BFS
+        q.push(root); // [3]
+        while (!q.empty()) {
+            int n = q.size();
+            // layer
             vector<int> layer;
-            int size = q.size();
-            for (int i = 0; i < size; i++){
-                head = q.front(); //first element
-                layer.push_back(head->val);
+            for (int i = 0; i < n; ++i) {
+                TreeNode* node = q.front();
+                layer.push_back(node->val);
                 q.pop();
-                // q has children?
-                if(head->left) q.push(head->left);
-                if(head->right) q.push(head->right);
+                
+                // left
+                if (node->left) q.push(node->left);
+                // right
+                if (node->right) q.push(node->right);
             }
-            result.push_back(layer);
+            res.push_back(layer);
         }
-        return result;
+        return res;
     }
 };
