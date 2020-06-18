@@ -1,28 +1,17 @@
 /*
- 2 
-  1
-0  0
+if (A[mid])
 */
-
 class Solution {
 public:
     int peakIndexInMountainArray(vector<int>& A) {
-        int start = 0, end = A.size() - 1; // start=0, end=3
-        while(start + 1 < end){
-            int mid = start + (end - start) / 2; // mid = 1
-            if(A[mid] > A[mid - 1]){ // left side
+        int start = 0;
+        int end = A.size() - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (A[mid] < A[mid + 1]) { // peak is on the right side
                 start = mid;
-            }
-            else{ // mid < A[mid-1] //right side
-                end = mid;
-            }
+            } else end = mid;
         }
-        if(A[start] > A[end]){
-            return start;
-        }
-        else{
-            return end;
-        }
-        
+        return A[start] > A[end] ? start : end;
     }
 };
