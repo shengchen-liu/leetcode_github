@@ -1,14 +1,11 @@
-/**
-nums1 : "91"
-nums2 : "129"
+/*
+123
+78
 
-add: 0
-"1" + "9" + add => digit: 0, add: 1
-"9" + "2" + add => digit: (9 + 2 + 1) % 10 = 2, add:(9 + 2 + 1) / 10 = 1
-"1" + add => digit: (1 + 1) % 10 = 2, add = (1 + 1) / 10 = 0
-res: "022"
-reverse res: "220"
-**/
+digit 0: 3 + 8 = 11 -> 1, add: 1
+digit 1: 2 + 7 + add = 2 + 7 + 1 = 10 -> 0, add: 1
+digit 2: 1 + 0 + add = 1 + 1 = 2, add: 0
+*/
 class Solution {
 public:
     string addStrings(string num1, string num2) {
