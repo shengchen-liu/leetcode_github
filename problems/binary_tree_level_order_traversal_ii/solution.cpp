@@ -9,25 +9,29 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+/*
+1. root is null => return {}
+2. root has left and right
+*/
 class Solution {
 public:
     vector<vector<int>> levelOrderBottom(TreeNode* root) {
-        if (!root) return {};
-        vector<vector<int>> res;
-        queue<TreeNode*> q;
-        q.push(root);
-        while (!q.empty()) {
-            int n = q.size();
-            vector<int> layer;
-            for (int i = 0; i < n; ++i) {
-                TreeNode* node = q.front();
-                q.pop();
-                layer.push_back(node->val);
-                if (node->left) q.push(node->left);
-                if (node->right) q.push(node->right);
-            }
-            res.insert(res.begin(), layer);
-        }
+        vector<vector<int>> res;    
+        if (!root) return res;
+        helper(root, 0, res);
+        reverse(res.begin(), res.end());
         return res;
+    }
+    
+    void helper(TreeNode* node, int level, vector<vector<int>> &res) {
+        if (res.size() == level) {
+            res.push_back({});
+        }
+        
+        res[level].push_back(node->val);
+        
+        if (node->left) helper(node->left, level + 1, res);
+        if (node->right) helper(node->right, level + 1, res);
     }
 };
