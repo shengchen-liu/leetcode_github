@@ -21,31 +21,37 @@ public:
     }
 };
 */
+
+/*
+  node ->left = predecessor
+  node ->right = successor
+*/
 class Solution {
 public:
+    // the smallest (first) and the largest (last) nodes
+    Node * first = NULL;
+    Node * last = NULL;
+    
+    void helper(Node* node) {
+        if (node) {
+            helper(node->left);
+            if (last) {
+                last->right = node;
+                node->left = last;
+            } else {
+                first = node;
+            }
+            last = node;
+            // right
+            helper(node->right);
+        }
+    }
     Node* treeToDoublyList(Node* root) {
         if (!root) return NULL;
-        Node* pre = NULL;
-        Node* head = NULL;
-        inorder(root, pre, head);
-        pre->right = head;
-        head->left = pre;
-        return head;
-    }
-    void inorder(Node* node, Node*& pre, Node*& head){
-        if (!node) return;
-        // left
-        inorder(node->left, pre, head);
-        // node
-        if (!head){
-            head = node;
-            pre = node;
-        } else{
-            pre->right = node;
-            node->left = pre;
-            pre = node;
-        }
-        //right
-        inorder(node->right, pre, head);
+        helper(root);
+        // close DLL
+        last->right = first;
+        first->left = last;
+        return first;
     }
 };
