@@ -9,11 +9,13 @@ public:
         }
     };
     
+    
+    /** Initialize your data structure here. */
     WordDictionary() {
         root = new TrieNode();
     }
     
-    // Adds a word into the data structure.
+    /** Adds a word into the data structure. */
     void addWord(string word) {
         TrieNode *p = root;
         for (auto &a : word) {
@@ -23,9 +25,8 @@ public:
         }
         p->isWord = true;
     }
-
-    // Returns if the word is in the data structure. A word could
-    // contain the dot character '.' to represent any one letter.
+    
+    /** Returns if the word is in the data structure. A word could contain the dot character '.' to represent any one letter. */
     bool search(string word) {
         return searchWord(word, root, 0);
     }
@@ -33,6 +34,7 @@ public:
     bool searchWord(string &word, TrieNode *p, int i) {
         if (i == word.size()) return p->isWord;
         if (word[i] == '.') {
+            // search all childs
             for (auto &a : p->child) {
                 if (a && searchWord(word, a, i + 1)) return true;
             }
@@ -42,14 +44,9 @@ public:
         }
     }
     
-private:
+private: 
     TrieNode *root;
 };
-
-// Your WordDictionary object will be instantiated and called as such:
-// WordDictionary wordDictionary;
-// wordDictionary.addWord("word");
-// wordDictionary.search("pattern");
 
 /**
  * Your WordDictionary object will be instantiated and called as such:
