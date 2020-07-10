@@ -1,18 +1,20 @@
+/*
+min heap, size of k
+
+*/
 class Solution {
 public:
     int findKthLargest(vector<int>& nums, int k) {
-        priority_queue<int, vector<int>, greater<int>> pq; // min heap
-        for (int i = 0; i < k; ++i) {
-            pq.push(nums[i]);
-        }
-        
-        for (int i = k; i < nums.size(); ++i) {
-            if (nums[i] > pq.top()) {
+        auto cmp = [](int &n1, int &n2) {return n1 > n2;};
+        priority_queue<int, vector<int>, decltype(cmp)> pq(cmp);
+        for (int num : nums) {
+            if (pq.size() < k) pq.push(num);
+            else if (num > pq.top()) {
                 pq.pop();
-                pq.push(nums[i]);
+                pq.push(num);
             }
         }
-        
         return pq.top();
+        
     }
 };
