@@ -4,15 +4,27 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     int rangeSumBST(TreeNode* root, int L, int R) {
-        if (!root) return 0;
-        if (root->val < L) return rangeSumBST(root->right, L, R);
-        if (root->val > R) return rangeSumBST(root->left, L, R);
-        return root->val + rangeSumBST(root->left, L, R) + rangeSumBST(root->right, L, R);
+        int res = 0;
+        stack<TreeNode*> s;
+        s.push(root);
+        while (!s.empty()) {
+            TreeNode* node = s.top();
+            s.pop();
+            if (node) {               
+                if (node->val >= L && node->val <= R) res += node->val;
+                if (node->val > L) s.push(node->left);
+                if (node->val < R) s.push(node->right);
+            }
+
+        }
+        return res;
     }
 };
