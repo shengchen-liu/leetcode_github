@@ -4,19 +4,26 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
-        return dfs(root, LONG_MIN, LONG_MAX);
+        TreeNode *pre = NULL;
+        return helper(root, pre);
     }
-    bool dfs(TreeNode* node, long min_val, long max_val){
+    
+    bool helper(TreeNode* node, TreeNode* &pre) {
         if (!node) return true;
-        
-        if (node->val <= min_val || node->val >= max_val) return false;
-        
-        return (dfs(node->left, min_val, node->val) && dfs(node->right, node->val, max_val));
+        bool res = helper(node->left, pre);
+        if (!res) return false;
+        if (pre) {
+            if (node->val <= pre->val) return false;
+        }
+        pre = node;
+        return helper(node->right, pre);
     }
 };
