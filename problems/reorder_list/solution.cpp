@@ -12,28 +12,34 @@ class Solution {
 public:
     void reorderList(ListNode* head) {
         if (!head || !head->next || !head->next->next) return;
-        ListNode *fast = head, *slow = head;
+        // 1. find the mid point
+        ListNode* fast = head;
+        ListNode* slow = head;
         while (fast && fast->next) {
-            slow = slow->next;
             fast = fast->next->next;
+            slow = slow->next;
         }
-        ListNode *mid = slow->next;
+        
+        // 2. reverse the linked list starting from slow->next
+        ListNode* mid = slow->next;
         slow->next = NULL;
         ListNode *last = mid;
         ListNode *pre = NULL;
-        // REVERSE SECOND HALF
         while (last) {
-            ListNode *next = last->next;
+            ListNode* next = last->next;
             last->next = pre;
             pre = last;
             last = next;
         }
+        
+        // 3. merge
         while (head && pre) {
-            ListNode *next = head->next;
+            ListNode* next= head->next;
             head->next = pre;
             pre = pre->next;
             head->next->next = next;
             head = next;
         }
+        
     }
 };
