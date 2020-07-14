@@ -4,65 +4,61 @@ class Node {
 public:
     int val;
     vector<Node*> neighbors;
-
-    Node() {}
-
+    
+    Node() {
+        val = 0;
+        neighbors = vector<Node*>();
+    }
+    
+    Node(int _val) {
+        val = _val;
+        neighbors = vector<Node*>();
+    }
+    
     Node(int _val, vector<Node*> _neighbors) {
         val = _val;
         neighbors = _neighbors;
     }
 };
 */
+
+
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        
-        // 1. get all original nodes -> unordered_set(n1,n2,n3,n4)
-        unordered_set<Node*> original_nodes = getNodes(node);
-        
-        // 2. copy all original nodes to a new nodes set : mapping(n: new Node(n))
-        unordered_map<Node*, Node*> mapping;
-        for (Node* i : original_nodes){
-            // cout << i -> val <<endl;
-            mapping[i] = new Node(i -> val);
-        }
-        
-        // 3. copy all neighbors into the new mapping
-        for (Node* old_node : original_nodes){
-            Node* new_node = mapping[old_node];
-            for (Node* neighbor : old_node -> neighbors){
-                // cout << neighbor -> val <<endl;
-                // be careful, this is old neighbor.  Should use mapping to find the address of the new neighboer
-                new_node -> neighbors.push_back(mapping[neighbor]);
-            }
-        }
-        return mapping[node];
-    }
-    
-    unordered_set<Node*> getNodes(Node* node){
-        //queue
-        queue<Node*> que;
-        que.push(node);
-        //set ()
-        unordered_set<Node*> all_nodes;
-        all_nodes.insert(node); // (1)
-        
+        if (!node) return {};
+        // 1. get all nodes in visited
         // BFS
-        while(!que.empty()){
-            Node* head = que.front();
-            que.pop();  // head: 1
-            // loop through all neighbors
-            int size = (head -> neighbors).size();
-            for (int i = 0; i < size; i++){ //
-                Node* neighbor = head -> neighbors[i]; //neighbor: 2
-                if(!all_nodes.count(neighbor)){
-                    all_nodes.insert(neighbor);
-                    que.push(neighbor);
-                    // cout << neighbor -> val << endl;
+        queue<Node*> q;
+        q.push(node);
+        unordered_set<Node*> visited;
+        visited.insert(node);
+        
+        while (!q.empty()) {
+            Node *oldNode = q.front();
+            q.pop();
+            // neighbors
+            for (auto neighbor : oldNode->neighbors) {
+                if (!visited.count(neighbor)) {
+                    visited.insert(neighbor);
+                    q.push(neighbor);
                 }
             }
         }
-        return all_nodes;
         
+        // 2. copy all original nodes to a new nodes set: mapping(n : new Node(n))
+        unordered_map<Node*, Node*> mapping;
+        for (Node* i : visited) {
+            mapping[i] = new Node(i->val);
+        }
+        
+        // 3. copy all neighbors
+        for (auto old_node : visited) {
+            auto new_node = mapping[old_node];
+            for (auto neighbor : old_node->neighbors) {
+                new_node->neighbors.push_back(mapping[neighbor]);
+            }
+        }
+        return mapping[node];
     }
 };
