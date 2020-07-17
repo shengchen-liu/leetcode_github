@@ -4,23 +4,37 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+/*
+BFS
+*/
 class Solution {
 public:
     vector<vector<int>> verticalOrder(TreeNode* root) {
         vector<vector<int>> res;
-        if (!root) return res;
         map<int, vector<int>> m; // treemap
-        queue<pair<int, TreeNode*>> q;
-        q.push({0, root}); // x, node
+        queue<pair<int, TreeNode*>> q; // {col_num, TreeNode*}
+        if (!root) return {};
+        q.push({0, root});
+        //BFS
+        int col = 0;
         while (!q.empty()) {
-            auto a = q.front();
+            auto a = q.front(); // node: 3
+            int col = a.first;
+            TreeNode* node = a.second;
+            m[col].push_back(node->val);
             q.pop();
-            m[a.first].push_back(a.second->val);
-            if (a.second->left) q.push({a.first - 1, a.second->left});
-            if (a.second->right) q.push({a.first + 1, a.second->right});
+            if (node->left) {
+                q.push({col - 1, node->left});
+            }
+            if (node->right) {
+                q.push({col + 1, node->right});
+            }
         }
         
         for (auto a : m) {
