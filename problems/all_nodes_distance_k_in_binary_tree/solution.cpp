@@ -10,27 +10,35 @@
 class Solution {
 public:
     vector<int> distanceK(TreeNode* root, TreeNode* target, int K) {
-        if (K == 0) return {target->val};
         vector<int> res;
-        helper(root, target, K, 0, res);
+        unordered_map<TreeNode*, TreeNode*> parent;
+        unordered_set<TreeNode*> visited;
+        findParent(root, parent);
+        helper(target, K, parent, visited, res);
         return res;
     }
-    int helper(TreeNode* node, TreeNode* target, int k, int dist, vector<int>& res) {
-    	if (!node) return 0;
-    	if (dist == k) {res.push_back(node->val); return 0;}
-    	int left = 0, right = 0;
-    	if (node->val == target->val || dist > 0) {
-    		left = helper(node->left, target, k, dist + 1, res);
-    		right = helper(node->right, target, k, dist + 1, res);
-    	} else {
-    		left = helper(node->left, target, k, dist, res);
-    		right = helper(node->right, target, k, dist, res);
-    	}
-    	if (left == k || right == k) {res.push_back(node->val); return 0;}
-    	if (node->val == target->val) return 1;
-    	if (left > 0) helper(node->right, target, k, left + 1, res);
-    	if (right > 0) helper(node->left, target, k, right + 1, res);
-    	if (left > 0 || right > 0) return left > 0 ? left + 1 : right + 1;
-    	return 0;
+    
+    void findParent(TreeNode* node, unordered_map<TreeNode*, TreeNode*>& parent){
+        if (!node) return;
+        if (node->left) parent[node->left] = node;
+        if (node->right) parent[node->right] = node;
+        findParent(node->left, parent);
+        findParent(node->right, parent);
+    }
+    
+    void helper(TreeNode* node, 
+                int K, 
+                unordered_map<TreeNode*, TreeNode*>& parent,
+                unordered_set<TreeNode*>& visited,
+                vector<int> &res) {
+        if (visited.count(node)) return;
+        visited.insert(node);
+        if (K == 0) {
+            res.push_back(node->val);
+            return;
+        }
+        if (node->left) helper(node->left, K - 1, parent, visited, res);
+        if (node->right) helper(node->right, K - 1, parent, visited, res);
+        if (parent[node]) helper(parent[node], K - 1, parent, visited, res);
     }
 };
