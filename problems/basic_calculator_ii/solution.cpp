@@ -6,7 +6,7 @@ public:
         stack<int> st;
         for (int i = 0; i < n; ++i) {
             if (s[i] >= '0') {
-                num = num * 10 + s[i] - '0';
+                num = num * 10 + s[i] -'0'; 
             }
             if ((s[i] < '0' && s[i] != ' ') || i == n - 1) {
                 if (op == '+') st.push(num);
@@ -18,12 +18,13 @@ public:
                 }
                 op = s[i];
                 num = 0;
-            } 
+            }
         }
+        
         while (!st.empty()) {
             res += st.top();
             st.pop();
         }
         return res;
-    }
+    } 
 };
