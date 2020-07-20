@@ -6,20 +6,19 @@ public:
     int findCelebrity(int n) {
         int res = 0; // candidate
         for (int i = 0; i < n; ++i) {
-            if (knows(res, i)) {
-                res = i;
-            }
+            if (knows(res, i)) res = i;
         }
         
-        // check the people before candidate 
+        // check the people before the candidate
         for (int i = 0; i < res; ++i) {
-            if ((knows(res, i)) || (!knows(i, res))) return -1;
+            if (knows(res, i)) return -1;
         }
         
-        // check people after candidate
+        // check the people after the candidate
         for (int i = res + 1; i < n; ++i) {
             if (!knows(i, res)) return -1;
         }
+        
         return res;
     }
 };
