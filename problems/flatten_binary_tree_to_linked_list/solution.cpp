@@ -4,21 +4,35 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     void flatten(TreeNode* root) {
-        if (!root) return;
-        if (root->left) flatten(root->left);
-        if (root->right) flatten(root->right);
-        TreeNode* temp = root->right;
-        root->right = root->left;
-        root->left = NULL;
-        // append right to the end of left
-        while(root->right) root = root->right;
-        root->right = temp;
+        helper(root);
+    }
+    
+    TreeNode* helper(TreeNode* node) {
+        // return the last node
+        if (!node) return NULL;
+        
+        // leaf
+        if (!node->left && !node->right) return node;
+        
+        TreeNode* left_last = helper(node->left);
+        TreeNode* right_last = helper(node->right);
+        
+        // if there is a left subtree
+        if (left_last) {
+            TreeNode* tmp = node->right;
+            node->right = node->left;
+            node->left = NULL;
+            left_last->right = tmp;
+        }
 
+        return right_last ? right_last : left_last;
     }
 };
