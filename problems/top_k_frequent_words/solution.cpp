@@ -2,29 +2,28 @@ class Solution {
 public:
     vector<string> topKFrequent(vector<string>& words, int k) {
         vector<string> res(k);
-        // count frequency
-        unordered_map<string, int> hashmap;
+        unordered_map<string, int> m;
         for (auto word : words) {
-            ++hashmap[word];
+            ++m[word];
         }
         
-        // sorting policy. compare two pairs<word, frequency>
-        auto cmp = [](const pair<string, int>& a, const pair<string, int>& b){
-            return a.second > b.second || (a.second == b.second && a.first < b.first); 
+        auto cmp = [](pair<string, int> &a, pair<string, int> &b){
+            return a.second > b.second ||(a.second == b.second && a.first < b.first);
         };
         
         // min_heap
-        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(cmp) > q(cmp);
-
-        for (auto f : hashmap) {
-            q.push(f);
-            if (q.size() > k) q.pop();
+        priority_queue<pair<string, int>, vector<pair<string, int>>, decltype(cmp)> pq(cmp);
+        
+        for (auto f : m) {
+            pq.push(f);
+            if (pq.size() > k) pq.pop();
         }
         
-        for (int i = q.size() - 1; i >= 0; --i) {
-            res[i] = q.top().first;
-            q.pop();
+        for (int i = k - 1; i >= 0; --i) {
+            res[i] = pq.top().first;
+            pq.pop();   
         }
+        
         return res;
     }
 };
