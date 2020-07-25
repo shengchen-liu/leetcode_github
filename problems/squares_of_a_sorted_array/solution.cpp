@@ -1,44 +1,40 @@
 class Solution {
-
-public:    
-    vector<int> sortedSquares(vector<int>& A) {  
+public:
+    vector<int> sortedSquares(vector<int>& A) {
+        vector<int> res;
+        int n = A.size();
         
-        int l=A.size(),j=l-1;
-        
-        vector<int> result;
-        
-        //geting the index of first non negative number
-        for(int m=0;m<l;m++){
-            if(A[m]>=0){
-                j=m;break;
+        int a = 0;
+        // find the first value >= 0
+        for (int i = 0; i < n; ++i) {
+            if (A[i] >= 0) {
+                a = i;
+                break;
             }
         }
-              
-        //squaring the elements.
-        for(int i=0;i<l;i++)
-        {
-            A[i]*=A[i];
-            
+                
+        int b = a - 1; // largest negative index
+        while (a < n && b >= 0) {
+            if (abs(A[a]) <= abs(A[b])) {
+                res.push_back(A[a] * A[a]);
+                ++a;
+            } else {
+                res.push_back(A[b] * A[b]);
+                --b;
+            }
         }
-        int k=j,i=j-1;
-        //merging the elements such that they are increasing order.
-           while(i>=0 && k<l){
-               if(A[i]<A[k]){
-                   result.push_back(A[i]);
-                   i--;
-               }
-               else{
-                   result.push_back(A[k]);
-                   k++;
-               }
-           }
-            //copy rest of elemets to result
-            while(i>=0){
-                result.push_back(A[i]);i--;
-            }
-            while(k<l){
-                result.push_back(A[k]);k++;
-            }
-            return result ;
+        
+        // anything remaining?
+        while (a < n) {
+            res.push_back(A[a] * A[a]);
+            ++a;
+        }
+        
+        while (b >= 0){
+            res.push_back(A[b] * A[b]);
+            --b;
+        }
+        
+        return res;
     }
 };
