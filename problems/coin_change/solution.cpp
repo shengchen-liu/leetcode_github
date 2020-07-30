@@ -1,9 +1,7 @@
-// dp[i]: fewest number of coins for amount i;
-// dp[0]: 0
-// dp[1]: 
 class Solution {
 public:
     int coinChange(vector<int>& coins, int amount) {
+        // dp[i]: fewest number of coins for amount i
         vector<int> dp(amount + 1, amount + 1);
         dp[0] = 0;
         for (int i = 1; i <= amount; ++i) {
