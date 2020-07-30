@@ -1,20 +1,12 @@
-/*
-binary search
-start, end, mid
-*/
 class Solution {
 public:
     int singleNonDuplicate(vector<int>& nums) {
-        int n = nums.size();
-        int start = 0;
-        int end = n - 1;
-        while(start < end) {
-            int mid = start + (end - start) / 2;
-            if (mid % 2 == 1) mid--;
-            // [start, mid) appears twice
-            if (nums[mid] == nums[mid + 1]) start = mid + 2;
-            else end = mid;
+        int left = 0, right = nums.size() - 1;
+        while (left < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] == nums[mid ^ 1]) left = mid + 1;
+            else right = mid;
         }
-        return nums[start];
+        return nums[left];
     }
 };
