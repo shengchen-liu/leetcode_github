@@ -1,25 +1,26 @@
 class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
+        if (nums.size() == 0) return {};
+        vector<int> path;
         vector<vector<int>> res;
-        vector<int> out; // leaf
-        getSubsets(nums, 0, out, res);
+        helper(0, nums, path, res);
         return res;
     }
     
-    void getSubsets(vector<int>& nums, 
-                    int pos, 
-                    vector<int> &out, 
-                    vector<vector<int>> &res) {
-        if (pos == nums.size()) {
-            res.push_back(out);
+    void helper(int i, vector<int>& nums, vector<int>& path, 
+                vector<vector<int>> &res) {
+        if (i == nums.size()) {
+            res.push_back(path);
             return;
         }
-        // add 
-        out.push_back(nums[pos]);
-        getSubsets(nums, pos + 1, out, res);
-        out.pop_back();
-        // don't add the current val
-        getSubsets(nums, pos+1, out, res);
+                
+        // 2. include nums[i]
+        path.push_back(nums[i]); // path : [1]
+        helper(i + 1, nums, path, res);
+        
+        // 1. don't include nums[i]
+        path.pop_back();
+        helper(i + 1, nums, path, res);
     }
 };
