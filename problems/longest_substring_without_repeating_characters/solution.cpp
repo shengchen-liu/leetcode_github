@@ -1,26 +1,21 @@
-/**
-
-**/
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
-        int res = 0;
-        unordered_set<char> unique;
-        int n = s.size();
+        // sliding window
         int i = 0;
         int j = 0;
-        while (i < n && j < n) {
-            if (!unique.count(s[j])) {
-                unique.insert(s[j]);
-                ++j;
-                res = max(res, j - i);
+        int n = s.size();
+        int res = 0;
+        unordered_set<char> visited;
+        while (i < n) {
+            if (!visited.count(s[i])) {
+                visited.insert(s[i]);
+                ++i;
+                res = max(res, i - j);
             } else {
-                while (unique.count(s[j])) {
-                    unique.erase(s[i++]);  
-                }
+                while (visited.count(s[i])) visited.erase(s[j++]);
             }
         }
-        
         return res;
         
     }
