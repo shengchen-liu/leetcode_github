@@ -18,8 +18,6 @@ public:
                 par.pop();
             }
         }
-        if (par.empty()) return true;
-        else return false;
-        
+        return par.empty();
     }
 };
