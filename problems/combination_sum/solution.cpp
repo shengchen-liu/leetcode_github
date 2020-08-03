@@ -3,26 +3,25 @@ public:
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
         sort(candidates.begin(), candidates.end());
         vector<int> out;
-        vector<vector<int>> result;
-        helper(candidates, out, result, 0, target);
-        return result;
+        vector<vector<int>> res;
+        helper(candidates, target, res, 0, out);
+        return res;
     }
     
+    // from index start, check candidates from start to end can sum up to target 
     void helper(vector<int>& candidates, 
-                vector<int>& out, 
-                vector<vector<int>>& result, 
-                int start, 
-                int target){
+                int target,
+                vector<vector<int>> &res, 
+                int start,
+               vector<int>& out) {
         if (target < 0) return;
-        if (target == 0){
-            result.push_back(out);
-        }
-        for (int i = start; i < candidates.size(); i++){
+        if (target == 0) res.push_back(out);
+        for (int i = start; i < candidates.size(); ++i) {
             if (candidates[i] > target) break;
             out.push_back(candidates[i]);
-            helper(candidates, out, result, i, target - candidates[i]);
+            helper(candidates, target - candidates[i], res, i, out);
             out.pop_back();
         }
+        
     }
-    
 };
