@@ -12,14 +12,18 @@
 class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
-        return dfs(root, k);
+        int cnt = count(root->left);
+        if (k <= cnt) {
+            return kthSmallest(root->left, k);
+        } else if (k > cnt + 1) {
+            return kthSmallest(root->right, k - cnt - 1);
+        } 
+        return root->val;
     }
     
-    int dfs(TreeNode* root, int &k) {
-        if (!root) return -1;
-        int val = dfs(root->left, k);
-        if (k == 0) return val;
-        if (--k == 0) return root->val;
-        return dfs(root->right, k);
+    // count how many elements in node's subtree
+    int count(TreeNode* node) {
+        if (!node) return 0;
+        return 1 + count(node->left) + count(node->right);
     }
 };
