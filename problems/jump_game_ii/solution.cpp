@@ -1,18 +1,17 @@
 class Solution {
 public:
     int jump(vector<int>& nums) {
-        int res = 0;
-        int n = nums.size();
-        int i = 0;
-        int cur = 0;
-        while (cur < n - 1) {
-            ++res;
-            int pre = cur;
-            for (; i <= pre; ++i) {
-                cur = max(cur, i + nums[i]);
-            }
-            if (pre == cur) return -1;
+        int n = nums.size(), step = 0, start = 0, end = 0;
+        while (end < n - 1) {
+            step++; 
+			int maxend = end + 1;
+			for (int i = start; i <= end; i++) {
+                if (i + nums[i] >= n - 1) return step;
+				maxend = max(maxend, i + nums[i]);
+			}
+            start = end + 1;
+            end = maxend;
         }
-        return res;
+		return step;
     }
 };
