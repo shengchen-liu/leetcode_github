@@ -1,15 +1,21 @@
 class Solution {
 public:
-    int maxProfit(vector<int> &prices) {
-        if (prices.empty()) return 0;
-        int n = prices.size(), g[n][3] = {0}, l[n][3] = {0};
-        for (int i = 1; i < prices.size(); ++i) {
-            int diff = prices[i] - prices[i - 1];
-            for (int j = 1; j <= 2; ++j) {
-                l[i][j] = max(g[i - 1][j - 1] + max(diff, 0), l[i - 1][j] + diff);
-                g[i][j] = max(l[i][j], g[i - 1][j]);
+    int maxProfit(vector<int>& prices) {
+                int n = prices.size();
+        int K = 2;
+        // corner case
+        if (n == 0){
+            return 0;
+        }
+        // main part
+        vector<vector<int>> dp(K + 1, vector<int>(n));
+        for (int i = 1; i < dp.size(); i ++){
+            int maxDiff = -prices[0];
+            for (int j = 1; j < dp[0].size(); j ++){
+                maxDiff = max(maxDiff, dp[i - 1][j - 1] - prices[j]);
+                dp[i][j] = max(dp[i][j - 1], prices[j] + maxDiff);
             }
         }
-        return g[n - 1][2];
+        return dp[K][n - 1];
     }
 };
