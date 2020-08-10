@@ -4,9 +4,14 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+// 中序走了 i-left 是个数 i-left+pLeft就是preOrder左子树的右区间了
+
 class Solution {
 public:
     TreeNode *buildTree(vector<int> &preorder, vector<int> &inorder) {
