@@ -1,17 +1,18 @@
 class Solution {
 public:
     int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
-        unordered_set<string> wordSet{wordList.begin(), wordList.end()};
+        int res = 0;
         queue<string> q;
+        unordered_set<string> wordSet{wordList.begin(), wordList.end()};
         q.push(beginWord);
-        //BFS
-        int layer = 0;
-        while(!q.empty()) {
+        
+        // check neighbors
+        while (!q.empty()) {
             int n = q.size();
             for (int i = 0; i < n; ++i) {
-                string word = q.front();
+                string word = q.front();  // tmp: hit
                 q.pop();
-                if (word == endWord) return layer + 1;
+                if (word == endWord) return res + 1;
                 for (int j = 0; j < word.size(); ++j) {
                     // candidates
                     string newWord = word;
@@ -25,9 +26,8 @@ public:
                     
                 }
             }
-            ++layer;
+            ++res;
         }
         return 0;
-        
     }
 };
