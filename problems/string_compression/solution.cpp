@@ -1,7 +1,8 @@
 class Solution {
 public:
     int compress(vector<char>& chars) {
-        int n = chars.size(), cur = 0;
+        int n = chars.size();
+        int cur = 0;
         for (int i = 0, j = 0; i < n; i = j) {
             while (j < n && chars[j] == chars[i]) ++j;
             chars[cur++] = chars[i];
