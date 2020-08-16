@@ -1,33 +1,39 @@
 class Solution {
 public:
     vector<int> spiralOrder(vector<vector<int>>& matrix) {
-        if (matrix.empty() || matrix[0].empty()) return {};
-        int m = matrix.size();
-        int n = matrix[0].size();
         vector<int> res;
-        int c = m > n ? (n + 1) / 2 : (m + 1) / 2;
-        int p = m, q = n;
-        // p, q 为当前换的高度和宽度
-        for (int i = 0; i < c; ++i, p -= 2, q -=2) {
+        int m = matrix.size();
+        if (m == 0) return res;
+        int n = matrix[0].size();
+        int r1 = 0, r2 = m - 1;
+        int c1 = 0, c2 = n - 1;
+        while (r1 <= r2 && c1 <= c2) {
             // top
-            for (int col = i; col < i + q; ++col) {
-                res.push_back(matrix[i][col]);
+            for (int c = c1; c <= c2; ++c) {
+                res.push_back(matrix[r1][c]);
             }
             // right
-            for (int row = i + 1; row < i + p; ++row) {
-                res.push_back(matrix[row][i + q - 1]);
+            for (int r = r1 + 1; r <= r2; ++r) {
+                res.push_back(matrix[r][c2]);
             }
-            if (p == 1 || q == 1) break;
-            // bottom
-            for (int col = i + q - 2; col >= i; --col) {
-                res.push_back(matrix[i + p - 1][col]);
+            if (r1 < r2 && c1 < c2) {
+                // bottom
+                for (int c = c2 - 1; c > c1; --c) {
+                    res.push_back(matrix[r2][c]);                
+                }
+                // left
+                for (int r = r2; r > r1; --r) {
+                    res.push_back(matrix[r][c1]);
+                }
             }
-            // left
-            for (int row =  i + p - 2; row > i; --row) {
-                res.push_back(matrix[row][i]);
-            }
+
+            
+            ++r1;
+            --r2;
+            ++c1;
+            --c2;
         }
+
         return res;
-        
     }
 };
