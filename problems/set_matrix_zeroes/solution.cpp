@@ -1,6 +1,6 @@
 class Solution {
 public:
-    void setZeroes(vector<vector<int> > &matrix) {
+    void setZeroes(vector<vector<int>>& matrix) {
         if (matrix.empty() || matrix[0].empty()) return;
         int m = matrix.size(), n = matrix[0].size();
         bool rowZero = false, colZero = false;
