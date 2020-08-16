@@ -1,24 +1,24 @@
 class Solution {
 public:
     void rotate(vector<vector<int>>& matrix) {
+        // 1. transpose
         int n = matrix.size();
-        
-        // transpose
+        if (n == 0) return;
         for (int i = 0; i < n; ++i) {
-            for (int j = i; j < n; ++j) {
-                int tmp = matrix[j][i];
-                matrix[j][i] = matrix[i][j];
-                matrix[i][j] = tmp;
+            for (int j = i + 1; j < n; ++j) {
+                int tmp = matrix[i][j];
+                matrix[i][j] = matrix[j][i];
+                matrix[j][i] = tmp;
             }
         }
         
-        // reverse
+        // 2. reverse cols
         for (int i = 0; i < n; ++i) {
             for (int j = 0; j < n / 2; ++j) {
                 int tmp = matrix[i][j];
                 matrix[i][j] = matrix[i][n - j - 1];
                 matrix[i][n - j - 1] = tmp;
             }
-        }
+        }     
     }
 };
