@@ -1,23 +1,14 @@
-/**
-dp[i] LIS staring from any point in front of i, end at point i
-**/
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
-        vector<int> dp(nums.size(), 1);
-        
-        for (int i = 0; i < nums.size(); ++i) {
-            for (int j = 0; j < i; ++j) {
-                if (nums[j] < nums[i]) {
-                    dp[i] = max(dp[i], dp[j] + 1);
-                }
-            }
+        // i: element at which a sebseq of length i termintates
+        vector<int> dp;
+        for (auto a : nums) {
+            if (find(dp.begin(), dp.end(), a) != dp.end()) continue;
+            auto it = upper_bound(dp.begin(), dp.end(), a);
+            if (it == dp.end()) dp.push_back(a);
+            else *it = a;
         }
-        
-        int res = 0;
-        for (int i = 0; i < nums.size(); ++i) {
-            res = max(res, dp[i]);
-        }
-        return res;
+        return dp.size();
     }
 };
