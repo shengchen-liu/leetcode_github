@@ -1,26 +1,30 @@
 class Solution {
 public:
     string decodeString(string s) {
-        int pos = 0;
-        return helper(pos, s);
-    }
-    
-    string helper(int& pos, string s) {
-        int num=0;
-        string word = "";
-        for(;pos<s.size(); pos++) {
-            char cur = s[pos];
-            if(cur == '[') {
-                string curStr = helper(++pos, s);
-                for(;num>0;num--) word += curStr;
-            } else if (cur >= '0' && cur <='9') {
-                num = num*10 + cur - '0';
-            } else if (cur == ']') {
-                return word;
-            } else {    // Normal characters
-                word += cur;
+        string t = "";
+        stack<int> s_num;
+        stack<string> s_str;
+        int cnt = 0;
+        for (int i = 0; i < s.size(); ++i) {
+            if (s[i] >= '0' && s[i] <= '9'){
+                cnt = cnt * 10 + s[i] - '0';
+            } else if (s[i] == '[') {
+                s_num.push(cnt);
+                s_str.push(t);
+                cnt = 0;
+                t.clear();
+            } else if (s[i] == ']') {
+                int k = s_num.top();
+                s_num.pop();
+                for (int j = 0; j < k; ++j) {
+                    s_str.top() += t;
+                }
+                t = s_str.top();
+                s_str.pop();
+            } else {
+                t += s[i];
             }
         }
-        return word;
+        return s_str.empty() ? t : s_str.top();
     }
 };
