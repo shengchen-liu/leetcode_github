@@ -3,16 +3,10 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
- [7, 2, 4, 3],  [5, 6, 4]
- 7243 + 564 = 7807
- 
- 7, 5
- 72, 56,
- 724, 564,
- 7243 , 564
- 
  */
 class Solution {
 public:
@@ -26,10 +20,9 @@ public:
             s2.push(l2->val);
             l2 = l2->next;
         }
-        // s1: [7, 2, 4, 3]
-        // s2: [5, 6, 4]
+        
         int sum = 0;
-        ListNode* res = new ListNode(0);
+        ListNode* res = new ListNode();
         while (!s1.empty() || !s2.empty()) {
             if (!s1.empty()) {
                 sum += s1.top();
@@ -46,6 +39,5 @@ public:
             sum /= 10;
         }
         return res->val == 0 ? res->next : res;
-
     }
 };
