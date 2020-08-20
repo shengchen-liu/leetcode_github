@@ -19,24 +19,24 @@ public:
 class Solution {
 public:
     Node* connect(Node* root) {
-        Node *dummy = new Node(0), *cur = dummy, *head = root;
-        while (root) {
-            if (root->left) {
-                cur->next = root->left;
-                cur = cur->next;
+        if (!root) return NULL;
+        Node* p = root->next;
+        while (p) {
+            if (p->left) {
+                p = p->left;
+                break;
             }
-            if (root->right) {
-                cur->next = root->right;
-                cur = cur->next;
+            if (p->right) {
+                p = p->right;
+                break;
             }
-            
-            root = root->next;
-            if (!root) {
-                cur = dummy;
-                root = dummy->next;
-                dummy->next = NULL;
-            }
+            p = p->next;
         }
-        return head;
+        if (root->right) root->right->next = p;
+        if (root->left) root->left->next = root->right ? root->right : p; 
+        connect(root->right);
+        connect(root->left);
+        return root;
+
     }
 };
