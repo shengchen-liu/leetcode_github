@@ -3,13 +3,15 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
 public:
-    ListNode* reverseBetween(ListNode* head, int m, int n) {
-         ListNode *dummy = new ListNode(-1), *pre = dummy;
+    ListNode *reverseBetween(ListNode *head, int m, int n) {
+        ListNode *dummy = new ListNode(-1), *pre = dummy;
         dummy->next = head;
         for (int i = 0; i < m - 1; ++i) pre = pre->next;
         ListNode *cur = pre->next;
@@ -21,5 +23,4 @@ public:
         }
         return dummy->next;
     }
-        
 };
