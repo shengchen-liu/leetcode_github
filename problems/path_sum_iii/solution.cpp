@@ -4,18 +4,26 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     int pathSum(TreeNode* root, int sum) {
-        if (!root) return 0;
-        return sumUp(root, 0, sum) + pathSum(root->left, sum) + pathSum(root->right, sum);
+                unordered_map<int, int> m;
+        m[0] = 1;
+        return helper(root, sum, 0, m);
     }
-    int sumUp(TreeNode* node, int pre, int& sum) {
+    
+    int helper(TreeNode* node, int sum, int curSum, unordered_map<int, int>& m) {
         if (!node) return 0;
-        int cur = pre + node->val;
-        return (cur == sum) + sumUp(node->left, cur, sum) + sumUp(node->right, cur, sum);
+        curSum += node->val;
+        int res = m[curSum -  sum];
+        ++m[curSum];
+        res += helper(node->left, sum, curSum, m) + helper(node->right, sum, curSum, m);
+        --m[curSum];
+        return res;
     }
 };
