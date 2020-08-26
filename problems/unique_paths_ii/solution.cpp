@@ -1,28 +1,25 @@
 class Solution {
 public:
     int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+        if (obstacleGrid.empty()) return 0;
         int m = obstacleGrid.size();
         int n = obstacleGrid[0].size();
-        vector<int> cur(m, 0);
-        for (int i = 0; i < m; i++) {
-            if (!obstacleGrid[i][0])
-                cur[i] = 1;
-            else break;
-        }
-        for (int j = 1; j < n; j++) {
-            bool flag = false;
-            if (obstacleGrid[0][j])
-                cur[0] = 0;
-            else flag = true;
-            for (int i = 1; i < m; i++) {
-                if (!obstacleGrid[i][j]) {
-                    cur[i] += cur[i - 1]; 
-                    if (cur[i]) flag = true;
-                }
-                else cur[i] = 0; 
+        // totoal number of unique paths at grid[i][j]
+        // vector<vector<int>> dp(m, vector<int>(n, 0));
+        vector<int> prev(n, 0);
+        vector<int> cur(n, 0);
+
+        for (int i = 0; i < m; ++i) {
+            for (int j = 0; j < n; ++j) {
+                // top edge
+                if (obstacleGrid[i][j] == 1) cur[j] = 0;
+                else if (i == 0 && j == 0) cur[j] = 1; 
+                else if (i == 0) cur[j] = cur[j - 1];
+                else if (j == 0) cur[j] = prev[j];
+                else cur[j] = cur[j - 1] + prev[j];
             }
-            if (!flag) return 0;
+            prev = cur;
         }
-        return cur[m - 1];
+        return cur[n - 1];
     }
 };
