@@ -1,7 +1,7 @@
 class Solution {
 public:
     string reverseWords(string s) {
-        // reverse the whole string
+        // 1. reverse the entire string
         reverse(s.begin(), s.end());
         
         int n = s.size();
@@ -9,24 +9,22 @@ public:
         for (int start = 0; start < n; ++start) {
             if (s[start] != ' ') {
                 // go to the beginning of the word
-                if (idx != 0) s[idx++] = ' ';
+                if (idx != 0) s[idx++] = ' '; // if this is not the first word
                 
-                // go to the end of thw world
+                // go to the end of the word
                 int end = start;
                 while (end < n && s[end] != ' ') {
                     s[idx++] = s[end++];
                 }
                 
-                //reverse the word
+                // reverse the word
                 reverse(s.begin() + idx - (end - start), s.begin() + idx);
                 
                 // move to the next word
                 start = end;
             }
-            
         }
-        s.erase(s.begin() + idx, s.end());
+                s.erase(s.begin() + idx, s.end());
         return s;
-        
     }
 };
