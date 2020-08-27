@@ -1,60 +1,108 @@
 class Solution {
 public:
+    /**
+     * @param words: a list of words
+     * @return: a string which is correct order
+     */
     string alienOrder(vector<string>& words) {
-        set<pair<char, char>> st; //[parent, child]
-        unordered_set<char> ch; // all candidates
-        string res;
-        
-        // insert all candidate chars into the hashset
-        for (auto word : words) {
-            ch.insert(word.begin(), word.end());
+        map<char, set<char> > graph = constructGraph(words);
+        if (!graph.size()) {
+            return "";
         }
-        
-        // compare each two neighboring words, store the pair into the treeset
-        for (int i  = 0; (int) i < words.size() - 1; ++i) {
-            int min_size = min(words[i].size(), words[i + 1].size());
-            // compare each digit starting from digit 0;
-            int j;
-            for (j = 0; j < min_size; ++j) {
-                if (words[i][j] != words[i + 1][j]) {
-                    st.insert(make_pair(words[i][j], words[i + 1][j]));
-                    // cout << i << endl;
-                    // cout << words[i][j] << ',' << words[i + 1][j] << endl;
+
+        return topologicalSorting(graph);
+    }
+
+    map<char, set<char> > constructGraph(vector<string>& words) {
+        map<char, set<char> > graph;
+        // create nodes
+        for (int i = 0; i < words.size(); i++) {
+            for (int j = 0; j < words[i].size(); j++) {
+                char c = words[i][j];
+                if (graph.find(c) == graph.end()) {
+                    set<char> temp;
+                    graph[c] = temp;
+                }
+            }
+        }
+
+        // create edges
+        for (int i = 0; i < words.size() - 1; i++) {
+            int index = 0;
+            while (index < words[i].size() && index < words[i + 1].size()) {
+                if (words[i][index] != words[i + 1][index]) {
+                    graph[words[i][index]].insert(words[i + 1][index]);
                     break;
                 }
+                index++;
             }
-        }
-        
-        // build in_degree vector
-        vector<int> in_degree(256); // a char is stored in a 8-bit number
-        for (auto edge : st) {
-            ++in_degree[edge.second];
-        }
-        
-        // build a queue
-        queue<char> q;
-        for (auto letter : ch) {
-            if (in_degree[letter] ==0) {
-                q.push(letter);
-                res+=letter;
-            }
-        }
-        
-        // BFS
-        while (!q.empty()) {
-            char c = q.front();
-            q.pop();
-            for (auto a : st) {
-                if (a.first == c) {
-                    --in_degree[a.second];
-                    if (in_degree[a.second] == 0) {
-                        q.push(a.second);
-                        res+=a.second;
-                    }
+            if (index == min(words[i].size(), words[i + 1].size())) {
+                if (words[i].size() > words[i + 1].size()) {
+                    return map<char, set<char> >();
                 }
             }
         }
-        
-        return res.size() == ch.size() ? res : "";
+
+        return graph;
     }
+
+    map<char, int> getIndegree(map<char, set<char> >& graph) {
+        map<char, int> indegree;
+        map<char, set<char> >::iterator iter;
+        iter = graph.begin();
+        while (iter != graph.end()) {
+            indegree[iter->first] = 0;
+            iter++;
+        }
+        
+        iter = graph.begin();
+        while (iter != graph.end()) {
+            set<char>::iterator _iter = (iter->second).begin();
+            while (_iter != (iter->second).end()) {
+                indegree[*_iter] = indegree[*_iter] + 1;
+                _iter++;
+            }
+            iter++;
+        }
+
+        return indegree;
+    }
+    
+    string topologicalSorting(map<char, set<char> > graph) {
+        map<char, int> indegree = getIndegree(graph);
+
+        priority_queue<char, vector<char>, greater<char> > Q;
+
+        map<char, int>::iterator iter;
+        iter = indegree.begin();
+        while (iter != indegree.end()) {
+            if (indegree[iter->first] == 0) {
+                Q.push(iter->first);
+            }
+            iter++;
+        }
+
+        string s = "";
+        while (Q.size()) {
+            char head = Q.top();
+            Q.pop();
+            s += head;
+            set<char>::iterator iter;
+            iter = graph[head].begin();
+            while (iter != graph[head].end()) {
+                char neighbor = *iter;
+                indegree[neighbor] -= 1;
+                if (indegree[neighbor] == 0) {
+                    Q.push(neighbor);
+                }
+                iter++;
+            }
+        }
+        
+        if (s.size() != indegree.size()) {
+            return "";
+        }
+        return s;
+    }
+
 };
