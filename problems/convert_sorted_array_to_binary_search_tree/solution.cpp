@@ -4,21 +4,24 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     TreeNode* sortedArrayToBST(vector<int>& nums) {
-        return helper(nums, 0, nums.size() - 1);
+        int n = nums.size();
+        return helper(0, n - 1, nums);
     }
-    TreeNode* helper(vector<int>& nums, int left, int right) {
+    
+    TreeNode* helper(int left, int right, vector<int>& nums) {
         if (left > right) return NULL;
         int mid = left + (right - left) / 2;
-        
-        TreeNode* cur = new TreeNode(nums[mid]);
-        cur->left = helper(nums, left, mid - 1);
-        cur->right = helper(nums, mid + 1, right);
-        return cur;
+        TreeNode* node = new TreeNode(nums[mid]);
+        node->left = helper(left, mid - 1, nums);
+        node->right = helper(mid + 1, right, nums);
+        return node;
     }
 };
