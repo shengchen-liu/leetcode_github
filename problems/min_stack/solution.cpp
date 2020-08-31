@@ -7,11 +7,15 @@ public:
     
     void push(int x) {
         s1.push(x);
-        if (s2.empty() || x <= s2.top()) s2.push(x);
+        if (s2.empty() || x <= s2.top()) {
+            s2.push(x);
+        }
     }
     
     void pop() {
-        if (s1.top() == s2.top()) s2.pop();
+        if (s2.top() == s1.top()) {
+            s2.pop();
+        }
         s1.pop();
     }
     
@@ -22,8 +26,8 @@ public:
     int getMin() {
         return s2.top();
     }
-
-private: 
+    
+private:
     stack<int> s1, s2;
 };
 
