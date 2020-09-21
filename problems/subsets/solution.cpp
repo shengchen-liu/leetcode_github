@@ -1,26 +1,37 @@
+/*
+dfs
+each num, 2 choices: 1. include it; 2. not include
+(1)       [_]                 1
+(2)        [_, _],               [_, 2]     [1, _], [1, 2]
+(3) [_, _, _], [_, _, 3], [_, 2, _], [_, 2, 3]     [1, _], [1, 2]
+*/
 class Solution {
 public:
     vector<vector<int>> subsets(vector<int>& nums) {
-        if (nums.size() == 0) return {};
-        vector<int> path;
         vector<vector<int>> res;
-        helper(0, nums, path, res);
+        vector<int> subset;
+        dfs(nums, 0, subset, res);
         return res;
     }
     
-    void helper(int i, vector<int>& nums, vector<int>& path, 
-                vector<vector<int>> &res) {
-        if (i == nums.size()) {
-            res.push_back(path);
-            return;
-        }
-                
-        // 2. include nums[i]
-        path.push_back(nums[i]); // path : [1]
-        helper(i + 1, nums, path, res);
+    void dfs(vector<int>& nums, 
+             int layer, 
+             vector<int>& subset, 
+             vector<vector<int>>& res) {
+        // termination condition
+            if (layer == nums.size()) {
+                res.push_back(subset);
+                return;
+            }
         
-        // 1. don't include nums[i]
-        path.pop_back();
-        helper(i + 1, nums, path, res);
+        // recursion
+        int num = nums[layer];
+        // 1. include num in subset
+        subset.push_back(num);
+        dfs(nums, layer + 1, subset, res);
+        
+        // 2. not include num in subset
+        subset.pop_back();
+        dfs(nums, layer + 1, subset, res);
     }
 };
