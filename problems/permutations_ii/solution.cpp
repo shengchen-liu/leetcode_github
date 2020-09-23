@@ -2,34 +2,33 @@ class Solution {
 public:
     vector<vector<int>> permuteUnique(vector<int>& nums) {
         vector<vector<int>> res;
-        vector<int> out;
-        int n = nums.size();
-        vector<int> visited(n);
+        vector<bool> visited(nums.size(), false);
+        vector<int> path;
         sort(nums.begin(), nums.end());
-        dfs(nums, out, res, 0, visited);
+        dfs(nums, visited, path, res);
         return res;
     }
     
-    // recursion on idx of nums
     void dfs(vector<int>& nums, 
-             vector<int>& out, 
-             vector<vector<int>>& res ,
-             int level,
-             vector<int>& visited) {
-        if (level >= nums.size()) {
-            res.push_back(out);
+             vector<bool>& visited, 
+             vector<int>& path,
+             vector<vector<int>> &res
+            ) {
+        // termination
+        if (path.size() == nums.size()) {
+            res.push_back(path);
             return;
         }
+        
+        // recursion
         for (int i = 0; i < nums.size(); ++i) {
-            if (visited[i] == 1) continue;
-            if (i > 0 && nums[i] == nums[i - 1] && visited[i - 1] == 0) continue;
-            visited[i] = 1;
-            // in-order
-            out.push_back(nums[i]);
-            dfs(nums, out, res, level + 1, visited);
-            out.pop_back();
-            visited[i] = 0;            
+            int cur = nums[i];
+            if (visited[i] || (i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])) continue;
+            path.push_back(cur);
+            visited[i] = true;
+            dfs(nums, visited, path, res);
+            path.pop_back();
+            visited[i] = false;
         }
-
     }
 };
