@@ -1,16 +1,32 @@
 class Solution {
 public:
-    vector<vector<int>> permute(vector<int>& num) {
+    vector<vector<int>> permute(vector<int>& nums) {
         vector<vector<int>> res;
-        permuteDFS(num, 0, res);
+        vector<int> path;
+        helper(nums, path, res, 0);
         return res;
     }
-    void permuteDFS(vector<int>& num, int start, vector<vector<int>>& res) {
-        if (start >= num.size()) res.push_back(num);
-        for (int i = start; i < num.size(); ++i) {
-            swap(num[start], num[i]);
-            permuteDFS(num, start + 1, res);
-            swap(num[start], num[i]);
+    
+    // construct a path that is currently at 'layer'.
+    void helper(vector<int>& nums, 
+                vector<int>& path, 
+                vector<vector<int>>& res,
+                int layer) {
+        // termination
+        int n = nums.size();
+        if (layer ==  n) {
+            res.push_back(path);
+            return;
+        }
+        
+        // recursion
+        // candidates: layer ~ n -1
+        for (int i = layer; i < n; ++i) {
+            path.push_back(nums[i]);
+            swap(nums[i], nums[layer]);
+            helper(nums, path, res, layer + 1);
+            path.pop_back();
+            swap(nums[i], nums[layer]);
         }
     }
 };
