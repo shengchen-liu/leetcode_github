@@ -4,45 +4,27 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-
-// divide & conquer
-// class Solution {
-// public:
-//     vector<int> preorderTraversal(TreeNode* root) {
-//         vector<int> result;
-//         if (root == NULL) return result;
-
-//         vector<int> left_results = preorderTraversal(root->left);
-//         vector<int> right_results = preorderTraversal(root->right);
-//         result.push_back(root -> val);
-//         result.insert(result.end(), left_results.begin(), left_results.end());
-//         result.insert(result.end(), right_results.begin(), right_results.end());
-        
-//         return result;
-            
-
-//     }
-// };
-
-class Solution{
-  public:
-    vector<int> preorder;
-
-    void traverse(TreeNode *root) {
-        if (root == NULL) {
-            return;
-        }
-        preorder.push_back(root->val);
-        traverse(root->left);
-        traverse(root->right);
+class Solution {
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> res;
+        helper(root, res);
+        return res;
     }
-
-    vector<int> preorderTraversal(TreeNode *root) {
-        preorder.clear();
-        traverse(root);
-        return preorder;
+    
+    void helper(TreeNode* node, vector<int>& res) {
+        // termination
+        if (!node) return;
+        
+        // recursion
+        // node, left, right
+        res.push_back(node->val);
+        helper(node->left, res);
+        helper(node->right, res);
     }
 };
