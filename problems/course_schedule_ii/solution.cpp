@@ -1,11 +1,7 @@
-/**
-[child, parent]
-**/
-
 class Solution {
 public:
     vector<int> findOrder(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<vector<int>> graph(numCourses, vector<int>());
+        unordered_map<int, vector<int>> graph;
         vector<int> res;
         // in degree
         vector<int> in_degree(numCourses, 0);
