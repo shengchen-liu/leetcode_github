@@ -1,59 +1,68 @@
 /*
-topological sort
-[[1,0], [0, 2], [3, 2], [3, 4]]
-
-0 -> 1
-2 -> 0
-2 -> 3
-4 -> 3
-
-build a in-dgree graph
-1: 1
-0: 1
-3: 2
+[0, 1]
+1->0
+[0,1], [0, 2], [2, 3], [3, 4]
+hashmap: parent: vector<child>
+1: 0
 2: 0
+3: 2
+4: 3
+
+in_degree:
+0: 2
+1: 0
+2: 1
+3: 1
 4: 0
 
-BFS:
-start with in-dgree == 0 nodes
-update in-dgree graph when a node is visited
+cnt:=0
+BFS
 
-end of loop
-compare count == n?
+start with in_dgree==0 node:
+    for child in m[node]:
+        --in_degree[child]
+        if (in_degree[child] == 0) queue.push(child), ++cnt
+        
+check cnt == numCourses
 */
 class Solution {
 public:
     bool canFinish(int numCourses, vector<vector<int>>& prerequisites) {
-        vector<int> in_degree(numCourses, 0);
-        unordered_map<int, vector<int>> m;
-        // in-degree graph
-        for (auto a : prerequisites){
-            int first = a[0];
-            int second = a[1];
-            in_degree[first]++;
-            m[second].push_back(first);
-        }
-        
-        // bfs
         queue<int> q;
-        for (int i = 0; i < numCourses; ++i) {
-            if (in_degree[i] == 0) q.push(i);
+        vector<int> in_degree(numCourses, 0);
+        
+        // build hashmap. update in_degree
+        unordered_map<int, vector<int>> m;
+        for (auto a : prerequisites) {
+            int child = a[0];
+            int parent = a[1];
+            m[parent].push_back(child);
+            ++in_degree[child];
         }
         
-        // q: {2, 4}
+        // BFS
         int cnt = 0;
+        // initialize queue
+        for (int i = 0; i < numCourses; ++i) {
+            if (in_degree[i] == 0){
+               q.push(i);
+            }
+        }
+        
+        // while !q.empty
         while (!q.empty()) {
             int cur = q.front();
             q.pop();
             ++cnt;
-            // find all neighbors that cur points to
-            for (int i : m[cur]) {
-                --in_degree[i];
-                if (in_degree[i] == 0)
-                    q.push(i);
+            // cur's childs
+            for (int child : m[cur]) {
+                --in_degree[child];
+                if (in_degree[child] == 0){
+                    q.push(child);
+                }
             }
         }
-        return cnt == numCourses;
         
+        return cnt == numCourses;
     }
 };
