@@ -1,23 +1,25 @@
+/*
+[[0,30],[5,10],[15,20]]
+1. sort by starting time
+[0,30],[5,10],[15,20]
+iterate all meetings:
+    check cur_end <= nex_start 
+*/
 class Solution {
 public:
     bool canAttendMeetings(vector<vector<int>>& intervals) {
-        if (intervals.empty()) return true;
-        // e_i vs. s_{i + 1}
-        sort(intervals.begin(), intervals.end(), 
-             [](const vector<int>& a, const vector<int>& b){return a[0] < b[0]; });
+        if (intervals.size() <= 1) return true;
         
-        vector<int> starts;
-        vector<int> ends;
-        for (auto it : intervals) {
-            // s: it[0]  e:it[1]
-            starts.push_back(it[0]);
-            ends.push_back(it[1]);
-        }
+        // 1. sort
+        sort(intervals.begin(), intervals.end());
         
+        // 2. iterate
         for (int i = 0; i < intervals.size() - 1; ++i) {
-            if (ends[i] > starts[i + 1]) return false;    
+            int cur_end = intervals[i][1];
+            int next_start = intervals[i + 1][0];
+            if (cur_end > next_start) return false;
         }
-        return true;
         
+        return true;
     }
 };
