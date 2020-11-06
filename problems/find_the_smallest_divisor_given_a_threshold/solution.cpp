@@ -1,3 +1,23 @@
+/*
+[1,2,5,9], threshold=6
+d
+1/d + 2/d + 5/d + 9/d = sum
+sum <= 6
+
+threshold : [n, 10^6]
+d: max_nums (9) => sum <= n upper_limit
+lower_limit: 1
+find d in range of [lower, upper]
+Binary search:
+mid = L + (U -L)/2
+calcluate sum based on M
+1) sum > threshold:
+    L = mid
+2) sum <= threshold:
+    U = mid
+
+mid
+*/
 class Solution {
 public:
     int smallestDivisor(vector<int>& nums, int threshold) {
