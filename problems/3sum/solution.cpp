@@ -1,28 +1,35 @@
+/*
+-1,0,1,2,-1,-4
+sort
+-4, -1, -1, 0, 1, 2
+a=-1:
+    b + c = -a
+
+*/
 class Solution {
 public:
     vector<vector<int>> threeSum(vector<int>& nums) {
         vector<vector<int>> res;
-        // sort 
-        sort(nums.begin(), nums.end()); // O(nlogn)
+        sort(nums.begin(), nums.end());
         for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] > 0) break;
+            int a = nums[i];
+            if (a > 0) break;
             if (i == 0 || nums[i - 1] != nums[i])
                 twoSum(nums, i, res);
         }
         return res;
-        
     }
     
-    void twoSum(vector<int>& nums, int i, vector<vector<int>>& res) {
-        int lo = i + 1;
-        int hi = nums.size() - 1;
-        while (lo < hi) {
-            int sum = nums[i] + nums[lo] + nums[hi];
-            if (sum < 0 || (lo > i + 1 && nums[lo] == nums[lo - 1])) {
-                ++lo;
-            } else if (sum > 0 || (hi < nums.size() - 1 && nums[hi] == nums[hi + 1])) --hi;
-            else
-                res.push_back({nums[i], nums[lo++], nums[hi--]});
+    void twoSum(vector<int>& nums, int start, vector<vector<int>>& res) {
+        int left = start + 1;
+        int right = nums.size() - 1;
+        while (left < right) {
+            int sum = nums[left] + nums[right] + nums[start];
+            if (sum < 0 || (left > start + 1 && nums[left] == nums[left - 1]))
+                ++left;
+            else if (sum > 0 || (right < nums.size() - 1 && nums[right] == nums[right + 1]))
+                --right;
+            else res.push_back({nums[start], nums[left++], nums[right--]});
         }
     }
 };
