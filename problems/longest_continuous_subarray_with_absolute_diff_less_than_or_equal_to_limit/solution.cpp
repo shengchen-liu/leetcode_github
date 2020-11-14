@@ -1,30 +1,13 @@
 /*
-[8,2,4,7], limit=4
-subarray.
-1. non-empty
-2. abs diff betw any two elements <= limit
-return the longest subarray
-
-limit: 5
-10,   1,    2,    4,    7,    2     len  valid? multiset
-i,j                                 1    T       
-i     j                             1    F
-      i,j                           1    t
-      i     j                       2    T
-      i           j                 3    T
-      i                 j           3    F
-            i           j           3    T
-            i                 j     4    T
-
-idx j:
-opt1:
-    for k = [i, j-1]
-        abs_diff(k, j) <= limit
-opt2:
-    multiset.begin - multiset.last <= limit => True
-    else False
-
-sliding windown
+8, 2, 4, 7          max_diff    max_size  maxHeap   minHeap
+ij                  0           1         8         8
+i  j                6           1         8,2       2,8
+   ij               0           1         2         2         
+   i  j             2           2         4,2       2,3 
+   i     j          5           2         7, 4, 2   2, 4, 7  
+      i  j          3           2         7, 4      4, 7
+      
+max_val, min_val
 */
 class Solution {
 public:
