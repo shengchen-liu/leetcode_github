@@ -25,17 +25,31 @@ public:
     string minWindow(string s, string t) {
         string res = "";
         unordered_map<char, int> letterCnt;
-        int left = 0, cnt = 0, minLen = INT_MAX;
         for (char c : t) ++letterCnt[c];
+        unordered_map<char, int>  sourceCnt;
+        int j = 0;
+        int cnt = 0; // num. of letters that have same frequences with target
+        int minLen = INT_MAX;
         for (int i = 0; i < s.size(); ++i) {
-            if (--letterCnt[s[i]] >= 0) ++cnt;
-            while (cnt == t.size()) {
-                if (minLen > i - left + 1) {
-                    minLen = i - left + 1;
-                    res = s.substr(left, minLen);
+            while (j < s.size() && cnt < letterCnt.size()) {
+                if (letterCnt.count(s[j])) {
+                    sourceCnt[s[j]]++;
+                    if (sourceCnt[s[j]] == letterCnt[s[j]])
+                        ++cnt;
                 }
-                if (++letterCnt[s[left]] > 0) --cnt;
-                ++left;
+                ++j;
+            }
+            
+            if (j - i < minLen && cnt == letterCnt.size()){
+                minLen = j - i;
+                res = s.substr(i, minLen);
+            }
+            
+            // remove i and move forward
+            if (letterCnt.count(s[i])) {
+                if (letterCnt[s[i]] == sourceCnt[s[i]])
+                    --cnt;
+                sourceCnt[s[i]]--;
             }
         }
         return res;
