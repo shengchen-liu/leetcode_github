@@ -1,25 +1,32 @@
 /*
-k=3                          deque           Max
-[1, 3, -1] -3, 5, 3, 6, 7    [0, 1, 2]     3
-1 [3  -1  -3] 5  3  6  7     [3, -1]       
-                             [3, -1, -3]    3
-1  3 [-1  -3  5] 3  6  7     [-1, -3]    
-                             [5]            5
-1  3  -1 [-3  5  3] 6  7     [5]      
-                             [5, 3]         5
-1  3  -1  -3 [5  3  6] 7     [5, 3]        
-                             [6]            6 
-1  3  -1  -3  5 [3  6  7]    [6]        
-                             [6 7]          7
-
-1. init deque with first k elements
-2. iterate over the array:
-    a) clean the deque:
-        (1) keep only idx in current window.  len == k?
-        (2) remove all elemets that are < current element
-    b) append current to the deque
-    c) append dequep[0] to the output
-                               
+1,3,-1,-3,5,3,6,7, k = 3
+1  3  -1 -3  5  3  6  7    deque(idx)                    max
+i      j                   [1, 2]                    3
+i         j                [1, 2, 3]          3
+   i      j                [2, 3]              3
+   i         j             [5]         5
+       i     j             [5]              5
+       i        j          [5, 3]          5
+          i     j          [5, 3]               5
+          i        j       [6]           ?
+             i     j       [6]                6
+             i        j    [7]            ?
+                i     j    [7]                7
+deque dq
+max
+for i from 0 to k-1:
+    initialize dq
+    while (val > dq.back()){
+        dq.pop_back()
+    }
+    dq.push_back(val)
+    
+for i from k to n - 1:
+    push val to dq
+    if nums[i] == dq.front:
+        dq.pop_front
+    res.push_back(dq.front())
+            
 */
 class Solution {
 public:
