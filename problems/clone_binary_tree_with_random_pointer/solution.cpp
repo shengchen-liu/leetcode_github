@@ -9,32 +9,6 @@
  *     Node(int x) : val(x), left(nullptr), right(nullptr), random(nullptr) {}
  *     Node(int x, Node *left, Node *right, Node *random) : val(x), left(left), right(right), random(random) {}
  * };
- old:                 new:
-        1                1
-         \
-          4                4
-         /
-        7                7
-        
-recursion f(Node*)
-if node is null:
-    Node* newNode = null
-    return
-    
-Node* newNode = new Node(1)
-m[oldNode] = newNode
-f(oldNode->left)
-f(oldNode->right)
-
-newNode->left = m[oldNode->left]
-newNode->right = m[oldNode->right]
-
-recursion2
-f2(Node* oldNode)
-    newNode = m[oldNode]
-    node->random = m[old->node->random]
-
-
  */
 
 class Solution {
