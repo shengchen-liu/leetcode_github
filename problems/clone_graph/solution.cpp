@@ -20,45 +20,71 @@ public:
         neighbors = _neighbors;
     }
 };
-*/
 
+1(pt1) -> 2(pt2)
+|
+4(pt4)
+
+return:
+1(pta) -> 2(ptb)
+|
+4(ptd)
+
+deepcopy:
+1. a new node
+2. copy value
+3. neighbors of new nodes
+
+hashmap: {old node : new node}
+oldNode->val
+create a newNode(val)
+newNode->neighbor = oldNode->neigbor
+1(pta) -> 2(pt2)
+1(pta) -> 2(ptb)
+
+for each node in newNode's neighbor:
+    node = hashmap(node)
+    
+*/
 
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        if (!node) return {};
-        // 1. get all nodes in visited
-        // BFS
+        if (!node) return NULL;
+        
+        // create new nodes, hashmap
+        unordered_map<Node*, Node*> m;
+        
+        // BFS to find all old nodes
         queue<Node*> q;
         q.push(node);
         unordered_set<Node*> visited;
         visited.insert(node);
-        
-        while (!q.empty()) {
-            Node *oldNode = q.front();
+        while(!q.empty()) {
+            Node* cur = q.front();
             q.pop();
-            // neighbors
-            for (auto neighbor : oldNode->neighbors) {
-                if (!visited.count(neighbor)) {
-                    visited.insert(neighbor);
-                    q.push(neighbor);
-                }
+            // check its neighbors
+            for (Node* neigh : cur->neighbors) {
+                if (visited.count(neigh))
+                    continue;
+                visited.insert(neigh);
+                q.push(neigh);
             }
         }
         
-        // 2. copy all original nodes to a new nodes set: mapping(n : new Node(n))
-        unordered_map<Node*, Node*> mapping;
-        for (Node* i : visited) {
-            mapping[i] = new Node(i->val);
+        // build new nodes, mapping
+        for (Node* a : visited) {
+            m[a] = new Node(a->val);
         }
         
-        // 3. copy all neighbors
-        for (auto old_node : visited) {
-            auto new_node = mapping[old_node];
-            for (auto neighbor : old_node->neighbors) {
-                new_node->neighbors.push_back(mapping[neighbor]);
+        // deep copy neighbors
+        for (Node* old : visited) {
+            Node* new_node = m[old];
+            for (Node* old_neigh : old->neighbors) {
+                new_node->neighbors.push_back(m[old_neigh]);
             }
         }
-        return mapping[node];
+        
+        return m[node];
     }
 };
