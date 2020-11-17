@@ -1,35 +1,44 @@
-// dfs
+/*
+dfs
+*/
+
 class Solution {
 public:
     int numIslands(vector<vector<char>>& grid) {
-        int res = 0;
-        if (grid.size() == 0) return 0;
+        int cnt = 0;
+        if (grid.size() == 0)
+            return cnt;
         int m = grid.size();
         int n = grid[0].size();
         vector<vector<bool>> visited(m, vector<bool>(n, false));
         
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (grid[i][j] == '0' || visited[i][j]) continue;
-                helper(grid, visited, i, j, m, n);
-                ++res;
+                if (visited[i][j] || grid[i][j] == '0')
+                    continue;
+                dfs(i, j, grid, visited);
+                ++cnt;
             }
         }
-        return res;
+        
+        return cnt;
     }
     
-    void helper(vector<vector<char>>& grid, 
-                vector<vector<bool>>& visited, 
-               int x,
-               int y,
-                int m, 
-                int n) {
-        if (x < 0 || x >= m || y < 0 || y >= n || 
-            visited[x][y] || grid[x][y] == '0') return;
-        visited[x][y] = true;
-        helper(grid, visited, x - 1, y, m, n);
-        helper(grid, visited, x + 1, y, m, n);
-        helper(grid, visited, x, y - 1, m, n);
-        helper(grid, visited, x, y + 1, m, n);
+    void dfs(int i, int j, vector<vector<char>>& grid, vector<vector<bool>>& visited) {
+        // termination
+        int m = grid.size();
+        int n = grid[0].size();
+        
+        if (i < 0 || i >= m || j <0 || j >= n || visited[i][j] || grid[i][j] == '0')
+            return;
+        
+        // recursion
+        visited[i][j] = true;
+        
+        // four directions
+        dfs(i - 1, j, grid, visited);
+        dfs(i + 1, j, grid, visited);
+        dfs(i, j - 1, grid, visited);
+        dfs(i, j + 1, grid, visited);
     }
 };
