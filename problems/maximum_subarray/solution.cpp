@@ -1,26 +1,25 @@
+/*
+                        
+-2, 1,  -3,4,-1,2,1,-5,4   res   max_sum
+i                          []    0
+   i,j                    [1]   1
+    i   j  
+    i      j
+   
+
+*/
+
+
 class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
-         if (nums.empty()) return 0;
-        return helper(nums, 0, (int)nums.size() - 1);
-    }
-    
-    int helper(vector<int>& nums, int left, int right) {
-        if (left >= right) return nums[left];
-        int mid =  left + (right - left) / 2;
-        int lmax = helper(nums, left, mid - 1);
-        int rmax = helper(nums, mid + 1, right);
-        int mmax = nums[mid];
-        int t = mmax;
-        for (int i = mid - 1; i >= left; --i) {
-            t += nums[i];
-            mmax = max(mmax, t);
+        int n = nums.size();
+        int maxSum = nums[0];
+        for (int i = 1; i < n; ++i) {
+            if (nums[i - 1] > 0)
+                nums[i] += nums[i - 1];
+            maxSum = max(nums[i], maxSum);
         }
-        t = mmax;
-        for (int i = mid + 1; i <= right; ++i) {
-            t += nums[i];
-            mmax = max(mmax, t);
-        }
-        return max(mmax, max(lmax, rmax));
+        return maxSum;
     }
 };
