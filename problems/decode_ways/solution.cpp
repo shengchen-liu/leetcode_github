@@ -11,7 +11,7 @@ public:
         for (int i = 2; i <= n; ++i) {
             // i'th element in s => s[i - 1]
             if (s[i - 1] != '0') {
-                dp[i] += dp[i - 1];
+                dp[i] = dp[i - 1];
             }
             
             int num = (s[i - 2] - '0') * 10 + (s[i - 1] - '0');
