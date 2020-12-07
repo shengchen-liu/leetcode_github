@@ -1,3 +1,9 @@
+/*
+babad
+dp[i][j]: substring from i to j is a palindrome?
+
+
+*/
 class Solution {
 public:
     string longestPalindrome(string s) {
