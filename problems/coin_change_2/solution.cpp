@@ -1,3 +1,7 @@
+/*
+dp[i][j]: for first i coins(1 based), value is j.  how many ways?
+dp[i][j] vs dp[i][j-1]
+*/
 class Solution {
 public:
     int change(int amount, vector<int>& coins) {
