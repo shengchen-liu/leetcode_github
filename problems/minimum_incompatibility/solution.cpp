@@ -1,49 +1,46 @@
+/*
+idx 0 1 2 3 4 ... 15
+    * * * * * ...  *
+    1   1   
+dp[s][i]: min cost to distribute a set of nums representd by binary mask,the last number in this set is nums[i]
+
+initi: dp[*][*] = max_int
+        dp[1<<i][i] = 0, cost of selecting a single number is zero
+        
+transition: 
+1. if s % (n / k) == 0, we start a new group, no extra cost
+    dp[s | (1 << j)][j] = dp[s][i]
+2. In the same group, we requre the selected numbers are monotonically increasing.  Each cost is nums[j] - nums[i]
+*/
 class Solution {
 public:
     int minimumIncompatibility(vector<int>& nums, int k) {
-        const int n = nums.size(), m = n/k;
-        const vector<pair<int, int>> bmap = getMap(nums, m);
-
-        vector<int> dp(1<<n, -1);
-        dp[0] = 0;
-        for (int b = 0; b < (1<<n); ++b) {
-            if (__builtin_popcount(b) % m != 0) continue;
-            for (const auto& [tb, v] : bmap) {
-                if (tb > b) break; // Only try m-digit combinations smaller than b.
-                if ((tb & b) != tb) continue;
-                if (dp[b-tb] == -1) continue;
-                if (dp[b] == -1) dp[b] = dp[b-tb]+v;
-                else dp[b] = min(dp[b], dp[b-tb]+v);
-            }
-        }
-        return dp.back();
-    }
-
-private:
-    // Pre-generates all valid subsets and corresponding incompatibilities.
-    vector<pair<int, int>> getMap(const vector<int>& nums, int m) {
-	    const int n = nums.size();
-        vector<pair<int, int>> ans;
-        for (int b = 0; b < (1<<n); ++b) {
-            if (__builtin_popcount(b) != m) continue;
-
-            int vis = 0;
-            int mx = 0, mn = 16;
-            bool is_good = true;
+        int n = nums.size();
+        int c = n / k;
+        int dp[1<<16][16]; // min cost to distribute a set of nums representd by binary mask,the last number in this set is nums[i]
+        memset(dp, 0x7f, sizeof(dp)); // 0x7f: 0111_1111
+        for (int i = 0; i < n; ++i)
+            dp[1 << i][i] = 0;
+        
+        for (int s = 0; s < 1 << n; ++s) {
             for (int i = 0; i < n; ++i) {
-                if ((b & (1<<i)) == 0) continue;
-                if (vis & (1<<nums[i])) {
-                    is_good = false;
-                    break;
+                if ((s & (1 << i)) == 0)
+                    continue; // skip if nums[i] is not the last elem in set
+                for (int j = 0; j < n; ++j){
+                    if ((s & (1 << j)))
+                        continue; // skip if j is already in the set
+                    int t = s | (1 << j);  // add j into the set
+                    if (__builtin_popcount(s) % c == 0) {
+                        // 1.  if (number of elems in s) % (n / k) == 0
+                        dp[t][j] = min(dp[t][j], dp[s][i]);
+                    } else if (nums[j] > nums[i]) {
+                        dp[t][j] = min(dp[t][j], dp[s][i] + nums[j] - nums[i]);
+                    }
                 }
-                vis |= (1<<nums[i]);
-                mx = max(mx, nums[i]);
-                mn = min(mn, nums[i]);
             }
-            if (!is_good) continue;
-            
-            ans.emplace_back(b, mx-mn);
         }
-        return ans;
+        int res =  *min_element(begin(dp[(1 << n) - 1]), 
+                           end(dp[(1 << n) - 1]));
+        return res > 1e9? -1 : res;
     }
 };
