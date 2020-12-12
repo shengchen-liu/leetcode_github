@@ -12,35 +12,32 @@
 class BSTIterator {
 public:
     BSTIterator(TreeNode* root) {
-        while (root) {
-            s.push(root);
+        this->inorder(root);
+    }
+    
+    int next() {
+        TreeNode* topNode = this->st.top();
+        st.pop();
+        if (topNode->right){
+            this->inorder(topNode->right);
+        }
+        return topNode->val;
+    }
+    
+    bool hasNext() {
+        return this->st.size() > 0;
+    }
+    
+    void inorder(TreeNode* root){
+        // add all elements in the leftmost branch to the stack
+        while (root){
+            this->st.push(root);
             root = root->left;
         }
     }
     
-    /** @return the next smallest number */
-    int next() {
-        TreeNode *n = s.top();
-        s.pop();
-        int res = n->val;
-        if (n->right) {
-            n = n->right;
-            while (n) {
-                s.push(n);
-                n = n->left;
-            }
-        }
-        return res;
-    }
-    
-    /** @return whether we have a next smallest number */
-    bool hasNext() {
-        return !s.empty();
-    }
-    
 private:
-    stack<TreeNode*> s;
-    
+    stack<TreeNode*> st;
 };
 
 /**
