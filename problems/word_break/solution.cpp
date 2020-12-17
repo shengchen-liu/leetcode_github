@@ -1,25 +1,17 @@
 class Solution {
 public:
     bool wordBreak(string s, vector<string>& wordDict) {
-        unordered_set<string> hashset;
-        for (auto word : wordDict) hashset.insert(word); 
-        //[cats, dog, sand, and, cat]
-        vector<bool> visited(s.size(), false);
-        queue<int> q;
-        q.push(0);
-        while (!q.empty()) {
-            int start = q.front();
-            q.pop();
-            if (!visited[start]) {
-                for (int i = start + 1; i < s.size() + 1; ++i) {
-                    if (hashset.count(s.substr(start, i - start))) {
-                        q.push(i);
-                        if (i == s.size()) return true;
-                    }
+        unordered_set<string> wordSet(wordDict.begin(), wordDict.end());
+        vector<bool> dp(s.size() + 1);
+        dp[0] = true;
+        for (int i = 0; i < dp.size(); ++i) {
+            for (int j = 0; j < i; ++j) {
+                if (dp[j] && wordSet.count(s.substr(j, i - j))) {
+                    dp[i] = true;
+                    break;
                 }
-                visited[start] = true;
             }
         }
-        return false;
+        return dp.back();
     }
 };
