@@ -1,3 +1,22 @@
+/*
+hashmap: key : ptr to a list member
+list: pair<key, val>
+
+m:
+3 : ptr->{3, 3}
+4 : ptr->{4,4}
+
+list:
+{1,1}
+{1,1}, {2, 2}
+{2,2}, {1, 1}
+{1,1}, {3, 3}
+{3,3}, {4, 4}
+{4,4}, {3,3}
+{3,3}, {4,4}
+
+
+*/
 class LRUCache {
 public:
     LRUCache(int capacity) {
@@ -5,27 +24,43 @@ public:
     }
     
     int get(int key) {
-        if (!m.count(key)) return -1;
-        auto it = m.find(key);
+        // hashmap
+        // no exist, exist
+        auto it = m.find(key);  // pair<int, iterator>
+        if (it == m.end())
+            return -1;
+        
+        // update list
         l.splice(l.begin(), l, it->second);
         return it->second->second;
     }
     
     void put(int key, int value) {
         auto it = m.find(key);
-        if (it != m.end()) l.erase(it->second);
-        l.push_front({key, value});
-        m[key] = l.begin();
-        if (m.size() > cap) {
-            int k = l.rbegin()->first;
-            l.pop_back();
-            m.erase(k);
+        // exist
+        // update l
+        if (it != m.end()){
+            it->second->second = value;
+            // move to the front of list
+            l.splice(l.begin(), l, it->second);
+            return;
         }
+        // no exist
+        // reach to the max cap
+        if (l.size() == cap){
+            auto node = l.back();
+            m.erase(node.first);
+            l.pop_back();
+        }
+        
+        // insert
+        l.push_front({key, value});
+        m[key] = l.begin();            
     }
-    
+
 private:
-    int cap; // capacity
-    list<pair<int, int>> l; // pair: {key, value}
+    int cap;
+    list<pair<int, int>> l;
     unordered_map<int, list<pair<int, int>>::iterator> m;
 };
 
