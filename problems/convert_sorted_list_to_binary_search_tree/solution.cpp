@@ -3,7 +3,9 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 /**
@@ -12,25 +14,49 @@
  *     int val;
  *     TreeNode *left;
  *     TreeNode *right;
- *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
 class Solution {
 public:
     TreeNode* sortedListToBST(ListNode* head) {
-        if (!head) return NULL;
-        return helper(head, NULL);
+        int n = findSize(head); // length of list
+        
+        return dfs(0, n - 1, head);
     }
-    TreeNode* helper(ListNode* head, ListNode* tail) {
-        if (head == tail) return NULL;
-        ListNode *slow = head, *fast = head;
-        while (fast != tail && fast->next != tail) {
-            slow = slow->next;
-            fast = fast->next->next;
+    
+    int findSize(ListNode* head) {
+        int cnt = 0;
+        while (head){
+            head = head->next;
+            ++cnt;
         }
-        TreeNode *cur = new TreeNode(slow->val);
-        cur->left = helper(head, slow);
-        cur->right = helper(slow->next, tail);
-        return cur;
+        return cnt;
     }
+    
+    TreeNode* dfs(int start, int end, ListNode *&head){
+        // termination
+        if (start > end)
+            return NULL;
+        
+        int mid = start + (end - start) / 2;
+        
+        // left
+        TreeNode* l = dfs(start, mid - 1, head);
+        
+        // node
+        TreeNode* node = new TreeNode(head->val);
+        node->left = l;
+        
+        head = head->next;
+
+        // right
+        TreeNode* r =  dfs(mid + 1, end, head);
+
+        node->right = r;
+        
+        return node;
+    } 
 };
