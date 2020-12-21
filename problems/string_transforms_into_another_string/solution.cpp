@@ -4,9 +4,11 @@ public:
        if (str1 == str2) return true;
         unordered_map<char, char> m;
         for (int i = 0; i < str1.size(); ++i) {
-            if (m[str1[i]] != NULL && m[str1[i]] != str2[i]) 
+            char a = str1[i];
+            char b = str2[i];
+            if (m[a] != NULL && m[a] != b) 
                 return false;
-            m[str1[i]] = str2[i];
+            m[a] = b;
         }
         return set(str2.begin(), str2.end()).size() < 26;
     }
