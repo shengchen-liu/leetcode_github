@@ -12,18 +12,22 @@
 class Solution {
 public:
     int kthSmallest(TreeNode* root, int k) {
-        int cnt = count(root->left);
-        if (k <= cnt) {
-            return kthSmallest(root->left, k);
-        } else if (k > cnt + 1) {
-            return kthSmallest(root->right, k - cnt - 1);
-        } 
-        return root->val;
-    }
-    
-    // count how many elements in node's subtree
-    int count(TreeNode* node) {
-        if (!node) return 0;
-        return 1 + count(node->left) + count(node->right);
+        stack<TreeNode*> st;
+        TreeNode* cur = root;
+        int cnt = 0;
+        while(cur || !st.empty()) {
+            while (cur) {
+                st.push(cur);
+                cur = cur->left;
+            }
+            // left most node
+            cur = st.top();
+            st.pop();
+            ++cnt;
+            if (cnt == k)
+                return cur->val;
+            cur = cur->right;
+        }
+        return -1;
     }
 };
