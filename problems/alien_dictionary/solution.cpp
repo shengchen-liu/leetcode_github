@@ -1,9 +1,5 @@
 class Solution {
 public:
-    /**
-     * @param words: a list of words
-     * @return: a string which is correct order
-     */
     string alienOrder(vector<string>& words) {
         map<char, set<char> > graph = constructGraph(words);
         if (!graph.size()) {
@@ -12,7 +8,7 @@ public:
 
         return topologicalSorting(graph);
     }
-
+    
     map<char, set<char> > constructGraph(vector<string>& words) {
         map<char, set<char> > graph;
         // create nodes
@@ -45,7 +41,7 @@ public:
 
         return graph;
     }
-
+    
     map<char, int> getIndegree(map<char, set<char> >& graph) {
         map<char, int> indegree;
         map<char, set<char> >::iterator iter;
@@ -104,5 +100,4 @@ public:
         }
         return s;
     }
-
 };
