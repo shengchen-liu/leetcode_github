@@ -15,34 +15,59 @@
  *     const vector<NestedInteger> &getList() const;
  * };
  */
+
+/*
+[1,[4,[6]]]
+isInteger() : false
+getList() -> vector<NestedInteger>
+[1], [4, [6]]
+
+[4, [6]]
+
+f(cur, res):
+    if cur.isInteger:
+        append cur to res
+        return
+    
+    vector = cur.getList()
+    for each comp in the vector:
+        f(comp, res)
+        
+iterative dfs
+for each member in input:
+    while (!member.isInteger):
+        layer = member.getList()
+*/
+
 class NestedIterator {
 public:
     NestedIterator(vector<NestedInteger> &nestedList) {
-        for (int i = nestedList.size() - 1; i >= 0; --i) {
-            s.push(nestedList[i]);
+        for (int i = nestedList.size() - 1; i >= 0; --i){
+            st.push(nestedList[i]);
         }
     }
-
+    
     int next() {
-        NestedInteger t = s.top();
-        s.pop();
+        NestedInteger t = st.top();
+        st.pop();
         return t.getInteger();
     }
-
+    
     bool hasNext() {
-        while (!s.empty()) {
-            NestedInteger t = s.top();
-            if (t.isInteger()) return true;
-            s.pop();
-            for (int i = t.getList().size() - 1; i >=0; --i) {
-                s.push(t.getList()[i]);
+        while (!st.empty()) {
+            NestedInteger t = st.top();
+            if (t.isInteger())
+                return true;
+            st.pop();
+            vector<NestedInteger> tmp = t.getList();
+            for (int i = t.getList().size() - 1; i >= 0; --i) {
+                st.push(tmp[i]);
             }
         }
         return false;
-        
     }
 private:
-    stack<NestedInteger> s;
+    stack<NestedInteger> st;
 };
 
 /**
