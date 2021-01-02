@@ -27,12 +27,10 @@ public:
         while (i < arr.size()) {
             int val = arr[i]; //91, 4
             if (!m.count(val)) {
-                cout << val << endl;
                 return false;
             } else{
                 auto tmp = m[val]; // {91}, {4, 64}
                 int n = tmp.size(); //1, 2
-                cout << n << endl;
                 int j = 0;
                 while (j < n) {
                     if (arr[i] != tmp[j]){
