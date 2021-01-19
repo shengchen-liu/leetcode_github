@@ -1,19 +1,28 @@
+/*
+deque: store idx.  Values in ascending order.  Only push new idx into the dequeu if its value >= deque's last element value
+*/
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        int res = 0;
-        stack<int> st;
-        heights.push_back(0);
+        deque<int> dq;
+        dq.push_back(-1);
         int n = heights.size();
-        for (int i = 0; i < heights.size(); ++i) {
-            while (!st.empty() && heights[st.top()] >= heights[i]) {
-                int cur = st.top();  // 0
-                st.pop();  //st:[]
-                res = max(res, heights[cur] * (st.empty() ? i : (i  - st.top() - 1)));
+        int maxArea = 0;
+        for (int i = 0; i < n; ++i) {
+            while (dq.back() != -1 && heights[dq.back()] >= heights[i]) {
+                int curHeight = heights[dq.back()];
+                dq.pop_back();
+                int curWidth = i - dq.back() - 1;
+                maxArea = max(maxArea, curHeight * curWidth);
             }
-            st.push(i);
+            dq.push_back(i);
         }
-    
-        return res;
+        while (dq.back() != -1) {
+            int curHeight = heights[dq.back()];
+            dq.pop_back();
+            int curWidth = n - dq.back() - 1;
+            maxArea = max(maxArea, curHeight * curWidth);
+        }
+        return maxArea;
     }
 };
