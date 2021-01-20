@@ -11,17 +11,29 @@
  */
 class Solution {
 public:
-    bool hasPathSum(TreeNode* root, int sum) {
-        if (!root) return false;
-        // if root is a leaf
-        if (!root->left && !root->right) {
-            if (root->val == sum) return true;
-            else return false;
-        }
-        if (hasPathSum(root->left, sum - root->val) ||
-            hasPathSum(root->right, sum - root->val))
-            return true;
-        return false;
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        //dfs
+        stack<TreeNode*> st;
+        if (!root)
+            return false;
         
+        st.push(root);
+        while (!st.empty()) {
+            TreeNode* t = st.top();
+            st.pop();
+            if (!t->left && !t->right){
+                if (t->val == targetSum)
+                    return true;
+            }
+            if (t->left) {
+                t->left->val += t->val;
+                st.push(t->left);
+            } 
+            if (t->right) {
+                t->right->val += t->val;
+                st.push(t->right);
+            }
+        }
+        return false;
     }
 };
