@@ -7,32 +7,25 @@
  *     ListNode(int x) : val(x), next(nullptr) {}
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
- 
- while (j):
-    1. i->val == j->val:  j = j->next
-    2. i->val != j->val: i = j. 
- 
- 1->1->2
- i  j
- i     j
- 
  */
 class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
-        if (!head) return NULL;
+        if (!head)
+            return head;
+        
         ListNode* i = head;
-        ListNode* j = head;
+        ListNode* j = head->next;
         while (j) {
-            if (i->val == j->val) {
-                j = j->next;
-                i->next = j;
-            }
-            else {
+            if (i->val != j->val) {
                 i->next = j;
                 i = j;
+            } else {
+                i->next = NULL;
             }
+            j = j->next;
         }
         return head;
+        
     }
 };
