@@ -1,35 +1,26 @@
 class Solution {
 public:
     vector<vector<int>> generateMatrix(int n) {
-        vector<vector<int>> res(n, vector<int>(n));
-        int up = 0;
-        int bottom = n - 1;
-        int left = 0;
-        int right = n - 1;
-        int val = 1;
-        while (true) {
-            //top
-            for (int j  = left; j <= right; ++j) {
-                res[up][j] = val++; 
+        vector<vector<int>> res(n, vector<int>(n, 0));
+        int cnt = 1;
+        for (int layer = 0; layer < (n + 1) / 2; ++layer) {
+            // top
+            for (int i = layer; i < n - layer; ++i) {
+                res[layer][i] = cnt++;
             }
-            if (++up > bottom) break;
-            //right
-            for (int i = up; i <= bottom; ++i) {
-                res[i][right] = val++;
+            // right
+            for (int i = layer + 1; i < n - layer; ++i) {
+                res[i][n - layer - 1] = cnt++;
             }
-            if (--right < left) break;
-            //bottom
-            for (int j = right; j >= left; --j) {
-                res[bottom][j] = val++;
+            // bottom
+            for (int i = n - layer - 2; i >= layer; --i) {
+                res[n- layer - 1][i] = cnt++;
             }
-            if (--bottom < up) break;
-            //left
-            for (int i = bottom; i >= up; --i) {
-                res[i][left] = val++;
+            // left
+            for (int i = n - layer - 2; i > layer; --i) {
+                res[i][layer] = cnt++;
             }
-            if (++left > right) break;
-        }
+        } 
         return res;
-        
     }
 };
