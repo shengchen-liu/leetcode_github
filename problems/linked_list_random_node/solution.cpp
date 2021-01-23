@@ -3,7 +3,9 @@
  * struct ListNode {
  *     int val;
  *     ListNode *next;
- *     ListNode(int x) : val(x), next(NULL) {}
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
 class Solution {
@@ -16,20 +18,20 @@ public:
     
     /** Returns a random node's value. */
     int getRandom() {
-        int res = head->val;
-        int i = 2;
-        ListNode *cur = head->next;
+        int cnt = 0;
+        int res = 0;
+        ListNode* cur = this->head;
         while (cur) {
-            int j = rand() % i;
-            if (j == 0) res = cur->val;
-            ++i;
+            ++cnt;
+            // decide whether to repalce 
+            if (rand() % cnt == 0)
+                res = cur->val;
             cur = cur->next;
         }
         return res;
     }
-    
 private:
-    ListNode *head;
+    ListNode* head;
 };
 
 /**
