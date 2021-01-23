@@ -1,23 +1,37 @@
+/*
+a b c a
+i     j
+
+1. s[i] == s[j] : ++i, --j
+2. s[i] != s[j] : cnt = 1.  
+    1) . validPalindrome(i + 1, j)
+    2) validPalindrome(i, j - 1)
+    
+*/
 class Solution {
 public:
     bool validPalindrome(string s) {
-        int left = 0, right = s.size() - 1;
-        while (left < right) {
-            if (s[left] == s[right]) {
-                ++left; --right;
-            } else {
-                int l = left, r = right - 1;
-                while (l < r) {
-                    if (s[l] != s[r]) break;
-                    ++l; --r;
-                    if (l >= r) return true;
-                }
-                ++left;
-                while (left < right) {
-                    if (s[left] != s[right]) return false;
-                    ++left; --right;
-                }
+        int n = s.size();
+        int i = 0; 
+        int j = n - 1;
+        while (i <= j) {
+            if (s[i] != s[j]) {
+                return (helper(s, i + 1, j) || helper(s, i, j - 1));
             }
+            ++i;
+            --j;
+        }
+        return true;
+    }
+    
+    bool helper(string s, int i, int j) {
+        int n = s.size();
+        while (i <= j) {
+            if (s[i] != s[j]) {
+                return false;
+            }
+            ++i;
+            --j;
         }
         return true;
     }
