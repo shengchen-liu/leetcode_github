@@ -1,20 +1,31 @@
 class Solution {
 public:
-int minCharacters(string a, string b) {
-    int res = INT_MAX, sza = a.size(), szb = b.size();
-    int cnt1[26] = {}, cnt2[26] = {};
-    for (auto ch : a)
-        ++cnt1[ch - 'a'];
-    for (auto ch : b)
-        ++cnt2[ch - 'a'];
-    for (auto ch = 1; ch < 26; ++ch) {
-        res = min({res, 
-            accumulate(begin(cnt1) + ch, end(cnt1), 0) +
-                accumulate(begin(cnt2), begin(cnt2) + ch, 0), 
-            accumulate(begin(cnt2) + ch, end(cnt2), 0) +
-                accumulate(begin(cnt1), begin(cnt1) + ch, 0),                  
-            sza - cnt1[ch] + szb - cnt2[ch]});
+    int minCharacters(string a, string b) {
+        int m = a.size();
+        int n = b.size();
+        int res = m + n;
+        vector<int> c1(26), c2(26);
+        for (char c : a) {
+            c1[c - 'a']++;
+        }
+        for (char c : b) {
+            c2[c - 'a']++;
+        }
+        
+        for (int i = 0; i < 26; ++i) {
+            // case 3
+            res = min(res, m + n - c1[i] - c2[i]); 
+            if (i > 0) {
+                c1[i] += c1[i - 1];
+                c2[i] += c2[i - 1];
+            }
+            if (i < 25) {
+                // case 1.  all chars in a < i and all chars in b >= i
+                res = min(res, m - c1[i] + c2[i]);
+                // case 2
+                res = min(res, n - c2[i] + c1[i]);
+            }
+        }
+        return res;
     }
-    return res;
-}
 };
