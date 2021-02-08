@@ -1,3 +1,9 @@
+/*
+n = 5
+5! = 5 * 4 * 3 * 2 * 1
+   = 5 * ()
+6! = 6 * 5!
+*/
 class Solution {
 public:
     int trailingZeroes(int n) {
