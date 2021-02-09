@@ -1,37 +1,28 @@
-/*
-dfs
-each num, 2 choices: 1. include it; 2. not include
-(1)       [_]                 1
-(2)        [_, _],               [_, 2]     [1, _], [1, 2]
-(3) [_, _, _], [_, _, 3], [_, 2, _], [_, 2, 3]     [1, _], [1, 2]
-*/
 class Solution {
 public:
-    vector<vector<int>> subsets(vector<int>& nums) {
-        vector<vector<int>> res;
-        vector<int> subset;
-        dfs(nums, 0, subset, res);
-        return res;
-    }
-    
-    void dfs(vector<int>& nums, 
-             int layer, 
-             vector<int>& subset, 
-             vector<vector<int>>& res) {
-        // termination condition
-            if (layer == nums.size()) {
-                res.push_back(subset);
-                return;
-            }
+    void dfs(vector<int>& nums, vector<vector<int>> &res, vector<int> &tmp, int i) {
+        // termination
+        int n = nums.size();
+        if (i == n){
+            res.push_back(tmp);
+            return;
+        }
         
         // recursion
-        int num = nums[layer];
-        // 1. include num in subset
-        subset.push_back(num);
-        dfs(nums, layer + 1, subset, res);
+        // don't include current val
+        dfs(nums, res, tmp, i + 1);
         
-        // 2. not include num in subset
-        subset.pop_back();
-        dfs(nums, layer + 1, subset, res);
+        // include current val
+        tmp.push_back(nums[i]);
+        dfs(nums, res, tmp, i + 1);
+        tmp.pop_back();
+    }
+    
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> res;
+        // back tracking
+        vector<int> tmp;
+        dfs(nums, res, tmp, 0);
+        return res;
     }
 };
