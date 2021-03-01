@@ -1,23 +1,29 @@
+/*
+1. concatenate two words into a sequeunce
+2. choose the longest palindromic subsequence
+*/
 class Solution {
 public:
-int longestPalindromeSubseq(string s, vector<vector<int>> &dp) {
-    for (int len = 1; len <= s.size(); ++len) 
-        for (auto i = 0; i + len <= s.size(); ++i) 
-            dp[i][i + len] = s[i] == s[i + len - 1] ? 
-                dp[i + 1][i + len - 1] + (len == 1 ? 1 : 2) : 
-                    max(dp[i][i + len - 1],  dp[i + 1][i + len]);
-    return dp[0][s.size()];
-}    
-int longestPalindrome(string w1, string w2) {
-    int sz = w1.size() + w2.size(), res = 0;
-    vector<vector<int>> dp(sz + 1, vector<int>(sz + 1));
-    longestPalindromeSubseq(w1 + w2, dp);
-    for (int i = 0; i < w1.size(); ++i)
-        for (int j = w2.size() - 1; j >= 0; --j)
-            if (w1[i] == w2[j]) {
-                res = max(res, dp[i][w1.size() + j + 1]);
-                break;
-            }
-    return res;
-}
+    int longestPalindrome(string word1, string word2) {
+        const int l1 = word1.length();
+        const int l2 = word2.length();
+        string s = word1 + word2;
+        const int n = l1 + l2;
+        vector<vector<int>> dp(n, vector<int>(n));
+        for (int i = 0; i < n; ++i) dp[i][i] = 1;
+        for (int l = 2; l <= n; ++l)
+          for (int i = 0, j = i + l - 1; j < n; ++i, ++j) {
+            if (s[i] == s[j])
+              dp[i][j] = dp[i + 1][j - 1] + 2;
+            else
+              dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);
+          }
+
+        int ans = 0;
+        for (int i = 0; i < l1; ++i)
+          for (int j = 0; j < l2; ++j)
+            if (word1[i] == word2[j])
+              ans = max(ans, dp[i][l1 + j]);
+        return ans;
+    }
 };
