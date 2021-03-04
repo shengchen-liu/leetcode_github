@@ -1,86 +1,50 @@
-struct CacheNode {
-    int key;
-    int value;
-    int freq;
-    // pointer to the node in the list
-    list<int>::const_iterator it;
-};
- 
 class LFUCache {
 public:
-    LFUCache(int capacity): capacity_(capacity), min_freq_(0) {}
+    LFUCache(int capacity) {
+        this->cap = capacity;
+    }
     
     int get(int key) {
-        auto it = n_.find(key);
-        if (it == n_.cend()) return -1;
-        touch(it->second);
-        return it->second.value;
+        if (m.count(key) == 0)
+            return -1;
+        freq[m[key].second].erase(iter[key]);
+        ++m[key].second;
+        freq[m[key].second].push_back(key);
+        iter[key] = --freq[m[key].second].end();
+        if (freq[minFreq].size() == 0)
+            ++minFreq;
+        return m[key].first;
     }
     
     void put(int key, int value) {
-        if (capacity_ == 0) return;
-        
-        auto it = n_.find(key);
-        if (it != n_.cend()) {
-            // Key already exists, update the value and touch it
-            it->second.value = value;
-            touch(it->second);
+        if (cap <= 0)
+            return;
+        if (get(key) != -1) {
+            m[key].first = value;
             return;
         }
-        
-        if (n_.size() == capacity_) {
-            // No capacity, need to remove one entry that
-            // 1. has the lowest freq
-            // 2. least recently used if there are multiple ones
-            
-            // Step 1: remove the element from min_freq_ list
-            const int key_to_evict = l_[min_freq_].back();
-            l_[min_freq_].pop_back();
-            
-            // Step 2: remove the key from cache
-            n_.erase(key_to_evict);
+        if (m.size() >= cap) {
+            m.erase(freq[minFreq].front());
+            iter.erase(freq[minFreq].front());
+            freq[minFreq].pop_front();
         }
-        
-        // We know new item has freq of 1, thus set min_freq to 1
-        const int freq = 1;
-        min_freq_ = freq;
-        
-        // Add the key to the freq list
-        l_[freq].push_front(key);
-        
-        // Create a new node
-        n_[key] = {key, value, freq, l_[freq].cbegin()};
+        m[key] = {value, 1};
+        freq[1].push_back(key);
+        iter[key] = --freq[1].end();
+        minFreq = 1;
     }
+
 private:
-    void touch(CacheNode& node) {
-        // Step 1: update the frequency
-        const int prev_freq = node.freq;
-        const int freq = ++(node.freq);
-        
-        // Step 2: remove the entry from old freq list
-        l_[prev_freq].erase(node.it);
-        
-        if (l_[prev_freq].empty() && prev_freq == min_freq_) {
-            // Delete the list
-            l_.erase(prev_freq);
-            
-            // Increase the min freq
-            ++min_freq_;
-        }
-        
-        // Step 4: insert the key into the front of the new freq list
-        l_[freq].push_front(node.key);
-        
-        // Step 5: update the pointer
-        node.it = l_[freq].cbegin();
-    }
-    
-    int capacity_;
-    int min_freq_;
-    
-    // key -> CacheNode
-    unordered_map<int, CacheNode> n_;
-    
-    // freq -> keys with freq
-    unordered_map<int, list<int>> l_;
+    int cap;
+    int minFreq;
+    unordered_map<int, pair<int, int>> m;
+    unordered_map<int, list<int>> freq;
+    unordered_map<int, list<int>::iterator> iter;
 };
+
+/**
+ * Your LFUCache object will be instantiated and called as such:
+ * LFUCache* obj = new LFUCache(capacity);
+ * int param_1 = obj->get(key);
+ * obj->put(key,value);
+ */
