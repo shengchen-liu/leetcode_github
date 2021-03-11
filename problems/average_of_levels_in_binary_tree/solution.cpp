@@ -12,21 +12,26 @@
 class Solution {
 public:
     vector<double> averageOfLevels(TreeNode* root) {
-        vector<double> res;
+        // bfs
         queue<TreeNode*> q;
         q.push(root);
-        
+        vector<double> res;
+        if (!root)
+            return res;
         while (!q.empty()) {
+            // traverse each layer
             int size = q.size();
-            double sum = 0;
+            long int sum = 0;
             for (int i = 0; i < size; ++i) {
                 TreeNode* node = q.front();
                 q.pop();
                 sum += node->val;
-                if (node->left) q.push(node->left);
-                if (node->right) q.push(node->right);
+                if (node->left)
+                    q.push(node->left);
+                if (node->right)
+                    q.push(node->right);
             }
-            res.push_back(sum / size);
+            res.push_back((double) sum / size);
         }
         return res;
     }
