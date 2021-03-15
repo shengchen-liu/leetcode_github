@@ -1,9 +1,3 @@
-/**
-BFS
-queue of 1's
-for each 1:
-    find it's neighbor that equals to 1 and is not visited, push to the queue
-**/ 
 class Solution {
 public:
     int maxAreaOfIsland(vector<vector<int>>& grid) {
