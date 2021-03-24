@@ -1,6 +1,9 @@
 /*
-dp[i][j]: for first i coins(1 based), value is j.  how many ways?
-dp[i][j] vs dp[i][j-1]
+1,2,5
+amount = 5
+                   []5
+         [1]4          [2]3  [5]0
+  [1]3   [2]2  [5] 1       
 */
 class Solution {
 public:
