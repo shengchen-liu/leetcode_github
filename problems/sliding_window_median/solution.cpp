@@ -1,33 +1,37 @@
 class Solution {
 public:
-    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
-        vector<double> res;
-        multiset<int> small, large;
-        for (int i = 0; i < nums.size(); ++i) {
-            if (i >= k) {
-                if (small.count(nums[i - k])) small.erase(small.find(nums[i - k]));
-                else if (large.count(nums[i - k])) large.erase(large.find(nums[i - k]));
-            }
-            if (small.size() <= large.size()) {
-                if (large.empty() || nums[i] <= *large.begin()) small.insert(nums[i]);
-                else {
-                    small.insert(*large.begin());
-                    large.erase(large.begin());
-                    large.insert(nums[i]);
-                }
-            } else {
-                if (nums[i] >= *small.rbegin()) large.insert(nums[i]);
-                else {
-                    large.insert(*small.rbegin());
-                    small.erase(--small.end());
-                    small.insert(nums[i]);
-                }
-            }
-            if (i >= (k - 1)) {
-                if (k % 2) res.push_back(*small.rbegin());
-                else res.push_back(((double)*small.rbegin() + *large.begin()) / 2);
-            }
+vector<double> medianSlidingWindow(vector<int>& nums, int k)
+{
+    vector<double> medians;
+    multiset<int> lo, hi;
+
+    for (int i = 0; i < nums.size(); i++) {
+        //remove outgoing element
+        if (i >= k) {
+            if (nums[i - k] <= *lo.rbegin())
+                lo.erase(lo.find(nums[i - k]));
+            else
+                hi.erase(hi.find(nums[i - k]));
         }
-        return res;
+
+        // insert incoming element
+        lo.insert(nums[i]);
+
+        // balance the sets
+        hi.insert(*lo.rbegin());
+        lo.erase(prev(lo.end()));
+
+        if (lo.size() < hi.size()) {
+            lo.insert(*hi.begin());
+            hi.erase(hi.begin());
+        }
+
+        // get median
+        if (i >= k - 1) {
+            medians.push_back(k & 1 ? *lo.rbegin() : ((double)(*lo.rbegin()) + (double)(*hi.begin())) * 0.5);
+        }
     }
+
+    return medians;
+}
 };
