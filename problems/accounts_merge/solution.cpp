@@ -1,53 +1,37 @@
-/*
-1. Merge two accounts if they have same emails
-2. Different people if they :
-    (1) have different name
-    (2) Names are the same, BUT emails are different
-*/
 class Solution {
+    int find(vector<int> &union_find, int ind) {
+        while(union_find[ind] != ind)
+            ind = union_find[ind];
+        return ind;
+    }
 public:
-    int find(int x) {
-        if (x == father[x]) return x;
-        return father[x] = find(father[x]);
-    }
-    
-    void connect (int a, int b) {
-        int root_a = find(a);
-        int root_b = find(b);
-        if (root_a != root_b) father[root_b] = root_a;
-    }
     vector<vector<string>> accountsMerge(vector<vector<string>>& accounts) {
-        int n = accounts.size();
-        for (int i = 0; i < n; ++i) father.push_back(i);
-        
         unordered_map<string, int> m;
-        for (int i = 0; i < n; ++i) {
-            for (int j = 1; j < accounts[i].size(); ++j) {
-                if (m.count(accounts[i][j])) {
-                    int k = m[accounts[i][j]];
-                    if (accounts[k][0] == accounts[i][0]) connect(i, k);
-                } else {
-                    m[accounts[i][j]] = i;
+        vector<int> union_find(accounts.size(), 0);
+        unordered_map<int, vector<string>> res_map;
+        for (int i = 0; i < accounts.size(); i++) {
+            union_find[i] = i;
+            for (int j = 1; j < accounts[i].size(); j++) {
+                if (m.find(accounts[i][j]) != m.end()) {
+                    int root1 = find(union_find, i);
+                    int root2 = find(union_find, m[accounts[i][j]]);
+                    union_find[root1] = root2;
                 }
+                else
+                    m[accounts[i][j]] = union_find[i];
             }
         }
-        
-         // 以union过的accounts ids来构造合并后的accounts，并保持string order
-        map<int, set<string>> merged;
-        for (int i = 0; i < n; ++i) {
-            int k = find(i);
-            merged[k].insert(accounts[i].begin(), accounts[i].end());
+        for (auto it : m) {
+            int ind = find(union_find, it.second);
+            res_map[ind].push_back(it.first);
         }
-
-        // final result
         vector<vector<string>> res;
-        for (auto i : merged) {
-            res.push_back(vector<string>(i.second.begin(), i.second.end()));
+        for (auto it : res_map) {
+            vector<string> email = it.second;
+            sort(email.begin(), email.end());
+            email.insert(email.begin(), accounts[it.first][0]);
+            res.push_back(email);
         }
-        
         return res;
     }
-    
-private:
-    vector<int> father;
 };
