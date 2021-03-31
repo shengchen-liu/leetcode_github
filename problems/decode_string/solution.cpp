@@ -1,30 +1,39 @@
+/*
+3[a2[c[c]]]
+repeat = 3
+content = dfs(a2[c[c]])
+content,content,content
+
+1. char
+2. num
+
+*/
 class Solution {
 public:
     string decodeString(string s) {
-        string t = "";
-        stack<int> s_num;
-        stack<string> s_str;
-        int cnt = 0;
-        for (int i = 0; i < s.size(); ++i) {
-            if (s[i] >= '0' && s[i] <= '9'){
-                cnt = cnt * 10 + s[i] - '0';
-            } else if (s[i] == '[') {
-                s_num.push(cnt);
-                s_str.push(t);
-                cnt = 0;
-                t.clear();
-            } else if (s[i] == ']') {
-                int k = s_num.top();
-                s_num.pop();
-                for (int j = 0; j < k; ++j) {
-                    s_str.top() += t;
-                }
-                t = s_str.top();
-                s_str.pop();
-            } else {
-                t += s[i];
+        int index = 0;
+        return decodeString(s, index);
+    }
+    
+    string decodeString(const string& s, int& index) {
+        string result;
+        while (index < s.length() && s[index] != ']') {
+            if (!isdigit(s[index]))
+                result += s[index++];
+            else {
+                int k = 0;
+                // build k while next character is a digit
+                while (index < s.length() && isdigit(s[index]))
+                    k = k * 10 + s[index++] - '0';  
+                // ignore the opening bracket '['    
+                index++;
+                string decodedString = decodeString(s, index);
+                // ignore the closing bracket ']'
+                index++;        
+                while (k-- > 0)
+                    result += decodedString;
             }
         }
-        return s_str.empty() ? t : s_str.top();
+        return result;
     }
 };
