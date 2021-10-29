@@ -1,42 +1,51 @@
 /*
- [2,3,6,7]
- 1. sort 
- 2. backtracking
- 
- 0:                          2,                             3, 6, 7
- 1:               2[4]              3[5],  6[8x], 7[x]
- 2:          2[6], 3[7Y],           3[8x] 
- 3: 2[8x]
+ backtracking
+ helper(int idx, cur_sum, target, path, candidates):
+    if (cur_sum == target):
+        res.push_back(path)
+        return
+    if (cur_sum > target):
+        return
+    
+    // traverse each candidate
+    for (i = idx; i < candidates.size(); ++i):
+        // choose candidates[i]
+        path.push_back(candidates[i])
+        cur_sum += candidates[i]
+        helper(i, cur_sum, target, path, candidates)
+        
+        // no choose candidates[i]
+        path.pop_back()
+        cur_sum -= candiates[i]
 */
 class Solution {
 public:
     vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
-        vector<vector<int>> res;
+        vector<vector<int>> result;
         vector<int> path;
-        helper(res, path, candidates, target, 0);
-        return res;
+        // sort
+        sort(candidates.begin(), candidates.end());
+        helper(0, 0, target, path, candidates, result);
+        return result;
     }
     
-    // backtracking
-    void helper(vector<vector<int>> &res, 
-                vector<int>& path, 
-                vector<int>& candidates,
-                int target,
-                int layer) {
+    void helper(int idx, int cur_sum, int target, vector<int>& path, const vector<int>& candidates, vector<vector<int>>& result) {
         // termination
-        int n = candidates.size();
-        if (target < 0) return;
-        if (target == 0) {
-            res.push_back(path);
+        if (cur_sum == target) {
+            result.push_back(path);
+            return;
+        }
+        if (cur_sum > target) {
             return;
         }
         
-        // recursing
-        // we are at current layer
-        for (int i = layer; i < candidates.size(); ++i) {
+        // recursion
+        for (int i = idx; i < candidates.size(); ++i) {
             path.push_back(candidates[i]);
-            helper(res, path, candidates, target - candidates[i], i);
+            cur_sum += candidates[i];
+            helper(i, cur_sum, target, path, candidates, result);
             path.pop_back();
+            cur_sum -= candidates[i];
         }
     }
 };
