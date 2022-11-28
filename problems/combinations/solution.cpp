@@ -1,8 +1,9 @@
 /*
 n, k
-k numbers [1, n]
-n = 4, k = 2
-2 numbers [1, 4]
+return all combo of k numbs chose from range [1, n]
+
+eg: n = 4, k =2
+range: [1, 2, 3, 4]
 1,2
 1,3
 1,4
@@ -10,37 +11,37 @@ n = 4, k = 2
 2,4
 3,4
 
-searching problem.
-combine k from [1, n]
-
-suppose 1st num: a => [a, ...]
-    combine k - 1 from [a + 1, n]
-    
-dfs(res, cur_set,n, k, idx): in the range of [idx, n], combine k numbers, 
-    
+search problem
+fn(i, n, k): range [i,n], find all combs of k numbs.
+    if k == 0:
+        update res
+        return
+    for each candidate j from [i + 1, n]:
+        cur_comb += j
+        fn(j, n, k - 1)
+        cur_comb.pop_back()
+        fn(j, n, k)
 */
 class Solution {
 public:
     vector<vector<int>> combine(int n, int k) {
         vector<vector<int>> res;
-        vector<int> cur_set;
-        dfs(res, cur_set, n, k, 1);
+        vector<int> curComb;
+        dfs(0, n, k, curComb, res);
         return res;
     }
-    
-    void dfs(vector<vector<int>>& res, vector<int>& cur_set, int n, int k, int idx) {
-        // termination
+
+    void dfs(int i, int n, int k, vector<int>& curComb, vector<vector<int>>& res) {
         if (k == 0) {
-            res.push_back(cur_set);
+            res.push_back(curComb);
             return;
         }
-        
-        // traverse candidates
-        for (int i = idx; i < n + 1 ; ++i) {
-            cur_set.push_back(i);
-            dfs(res, cur_set, n, k - 1, i + 1);
-            cur_set.pop_back();
 
+        // iterate
+        for (int j = i + 1; j <= n; ++j) {
+            curComb.push_back(j);
+            dfs(j, n, k - 1, curComb, res);
+            curComb.pop_back();
         }
     }
 };
