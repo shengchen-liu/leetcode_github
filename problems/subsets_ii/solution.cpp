@@ -1,47 +1,56 @@
 /*
-1, 2, 2
+search 
 
-               _,         1
-       /         \         /    \
-    _,_           _,2           1,_              1,2
-  /   \          /  \        /       \             /\
-_,_,_ _,_,2   _,2,_ _,2,2   1,_,_   1,_,2         1,2,_ 1,2,2
-[]    [2]     [2]      [2,2]   [1]   [1,2]        [1,2], [1,2,2]
+[1, 2, 2]
+1. sort (nlogn)
+2. dfs
 
-1. sort the array in ascending order
-2. dfs: starting at start_idx, traverse all nums.  update res
-dfs(res, curr_set, nums, start_idx):
-    for i from start_idx to n:
-        // current num is duplicate
-        if (i != start_idx and nums[i] == nums[i - 1])
-            continue
-        curr_set.push_back(nums[i])
-        dfs(res, curr_set, nums, i + 1)
-        curr_set.pop_back
-    
+                          /1                      \[]
+                         {1}                       {}
+                      /2    \[]                  /2      \[]
+                {1, 2}      {2}                 {2}       {} 
+
+dfs(i, nums, cur, res):
+    // termination
+    if i == nums.size:
+        res += cur
+        return
+    // recursion
+    // keep
+    if i == 0 or nums[i] > nums[i - 1]:
+        add nums[i] to cur
+        dfs(i + 1, nums, cur, res)
+        delete nums[i]
+    // no keep
+    else: 
+        dfs(i + 1, nums, cur, res)
+
 */
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
         vector<vector<int>> res;
-        vector<int> cur_set;
-        // 1. sort
+        int n = nums.size();
+        // sort
         sort(nums.begin(), nums.end());
-        dfs(res, cur_set, nums, 0);
+        vector<int> cur;
+        dfs(0, nums, cur, res);
         return res;
     }
-    
-    void dfs(vector<vector<int>>& res, vector<int>& cur_set, const vector<int>& nums, int idx) {
-        // add current set into res
-        res.push_back(cur_set);
-        
-        for (int i = idx; i < nums.size(); ++i) {
-            if (i != idx && nums[i] == nums[i - 1]) {
+
+    // dfs
+    void dfs(int i, const vector<int>& nums,  vector<int>& cur, vector<vector<int>>& res) {
+        // operate on current level
+        res.push_back(cur);
+
+        // iterate each candidate
+        for (int j = i; j < nums.size(); ++j) {
+            if (j != i && nums[j] == nums[j - 1]) {
                 continue;
             }
-            cur_set.push_back(nums[i]);
-            dfs(res, cur_set, nums, i + 1);
-            cur_set.pop_back();
+            cur.push_back(nums[j]);
+            dfs(j+1, nums, cur, res);
+            cur.pop_back();
         }
     }
 };
