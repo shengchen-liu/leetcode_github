@@ -1,56 +1,46 @@
 /*
-search 
-
-[1, 2, 2]
-1. sort (nlogn)
-2. dfs
-
-                          /1                      \[]
-                         {1}                       {}
-                      /2    \[]                  /2      \[]
-                {1, 2}      {2}                 {2}       {} 
-
-dfs(i, nums, cur, res):
-    // termination
-    if i == nums.size:
-        res += cur
-        return
-    // recursion
-    // keep
-    if i == 0 or nums[i] > nums[i - 1]:
-        add nums[i] to cur
-        dfs(i + 1, nums, cur, res)
-        delete nums[i]
-    // no keep
-    else: 
-        dfs(i + 1, nums, cur, res)
-
+1 2 2
+0 0 0   -> []
+1 0 0   -> [1]
+0 1 0   -> [2]
+0 0 1   -> [2] x
+1 1 0   -> [1, 2]
+1 0 1   -> [1, 2] x
+1 1 1   -> [1, 2, 2]
+0 1 1   -> [2, 2]
 */
 class Solution {
 public:
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
-        vector<vector<int>> res;
-        int n = nums.size();
+        int size = nums.size();
+
         // sort
         sort(nums.begin(), nums.end());
-        vector<int> cur;
-        dfs(0, nums, cur, res);
-        return res;
-    }
+        vector<vector<int>> res;
 
-    // dfs
-    void dfs(int i, const vector<int>& nums,  vector<int>& cur, vector<vector<int>>& res) {
-        // operate on current level
-        res.push_back(cur);
+        unordered_set<string> seen;
 
-        // iterate each candidate
-        for (int j = i; j < nums.size(); ++j) {
-            if (j != i && nums[j] == nums[j - 1]) {
-                continue;
+        // traverse each bit mas
+        for (int i = 0; i < pow(2, size); ++i) {
+            vector<int> curSet;
+            string hashcode = "";
+            // iterate over each num
+            for (int j = 0; j < size; ++j) {  // i = 1 1* 0, j = 1
+                // mask
+                int mask = 1 << j;
+                if (mask & i) {
+                    curSet.push_back(nums[j]);
+                    hashcode += to_string(nums[j]);
+                    hashcode += ",";
+                }
             }
-            cur.push_back(nums[j]);
-            dfs(j+1, nums, cur, res);
-            cur.pop_back();
+
+            if (seen.find(hashcode) == seen.end()) {
+                res.push_back(curSet);
+                seen.insert(hashcode);
+            }
         }
+
+        return res;
     }
 };
