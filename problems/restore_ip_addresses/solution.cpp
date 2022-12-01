@@ -1,27 +1,34 @@
-/*
-25525511135
-0~255
-255, 255, 111, 35
-
-*/
 class Solution {
 public:
     vector<string> restoreIpAddresses(string s) {
-               vector<string> res;
-        helper(s, 0, "", res);
-        return res; 
+        vector<string> res;
+        string path = "";
+        int cnt = 0;
+        dfs(0, cnt, s, path, res);
+        return res;
     }
-    void helper(string s, int n, string out, vector<string> &res) {
-        if (n == 4) {
-            if(s.empty()) res.push_back(out);
-        } else {
-            for (int k = 1; k < 4; ++k) {
-                if (s.size() < k) break;
-                //check the current substr
-                int val = atoi(s.substr(0, k).c_str());
-                if (val >= 256 || k != to_string(val).size()) continue;
-                helper(s.substr(k), n + 1, out + s.substr(0, k) + (n == 3 ? "" : "."), res);
-            }
+
+    void dfs(int start, int cnt, const string s, string path, vector<string>& res) {
+        // termination
+        if(start == s.size() && cnt == 4) {
+            res.push_back(path);
+            return;
+        } else if (start == s.size() || cnt == 4) {
+            return;
         }
+
+        // recrusion
+        for (int i = start; i < s.size(); ++i) {
+            string curStr = s.substr(start, i - start + 1); // "2"
+            // check curStr
+            if (!isValid(curStr)) break;
+            dfs(i + 1, cnt + 1, s, path + curStr + (cnt < 3? "." : ""), res);
+        }
+    }
+
+    bool isValid(string input) {
+        if (atoi(input.c_str()) > 255 || (input.size() > 1 && input[0] == '0'))
+            return false;
+        return true;
     }
 };
