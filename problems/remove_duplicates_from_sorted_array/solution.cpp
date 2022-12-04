@@ -1,18 +1,23 @@
+/*
+nums = [1, 1, 2]
+1, 1, 2
+i  j
+   
+1, 2, 3
+i
+nums[i] < nums[i+1]: i++, j++, nums[j] = nums[i]
+        ==           i++
+*/
 class Solution {
 public:
     int removeDuplicates(vector<int>& nums) {
-        if (nums.empty()) return 0;
-        int p1 = 0;
-        int p2 = 0;
-        while ( p2 < nums.size()) {
-            if (nums[p2] > nums[p1]) {
-                nums[++p1] = nums[p2++];
-            }
-            else {
-                p2++;
+        int j = 0;
+        for (int i = 0; i < nums.size()-1; ++i) {
+            if (nums[i] < nums[i+1]) {
+                j++;
+                nums[j] = nums[i+1];
             }
         }
-        return p1 + 1;
-        
+        return j + 1;
     }
 };
