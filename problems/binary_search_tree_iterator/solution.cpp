@@ -12,30 +12,29 @@
 class BSTIterator {
 public:
     BSTIterator(TreeNode* root) {
-        this->inorder(root);
+        inOrder(root);
     }
     
     int next() {
-        TreeNode* topNode = this->st.top();
+        TreeNode* p = st.top();
         st.pop();
-        if (topNode->right){
-            this->inorder(topNode->right);
+        if (p->right) {
+            inOrder(p->right);
         }
-        return topNode->val;
+        return p->val;
     }
     
     bool hasNext() {
-        return this->st.size() > 0;
+        return !st.empty();
     }
-    
-    void inorder(TreeNode* root){
-        // add all elements in the leftmost branch to the stack
-        while (root){
-            this->st.push(root);
-            root = root->left;
+
+    void inOrder(TreeNode* node) {
+        // add all the left most nodes of this node
+        while(node) {
+            st.push(node);
+            node = node->left;
         }
     }
-    
 private:
     stack<TreeNode*> st;
 };
