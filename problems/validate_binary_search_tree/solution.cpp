@@ -9,29 +9,16 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
-
-/*
-low < node < high
-for each node:
-    update low, high
-    compare node's val vs low,high
-*/
 class Solution {
 public:
     bool isValidBST(TreeNode* root) {
         return dfs(root, LONG_MIN, LONG_MAX);
     }
-    
-    bool dfs(TreeNode* node, long low, long high) {
-        // termination
-        if (!node)
-            return true;
+    bool dfs(TreeNode* node, long min_val, long max_val){
+        if (!node) return true;
         
-        // recursion
-        if (node->val <= low || node->val >= high)
-            return false;
-        bool left_res = dfs(node->left, low, node->val);
-        bool right_res = dfs(node->right, node->val, high);
-        return left_res && right_res;
+        if (node->val <= min_val || node->val >= max_val) return false;
+        
+        return (dfs(node->left, min_val, node->val) && dfs(node->right, node->val, max_val));
     }
 };
