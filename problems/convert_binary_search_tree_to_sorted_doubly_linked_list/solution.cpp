@@ -23,35 +23,47 @@ public:
 */
 
 /*
-  node ->left = predecessor
-  node ->right = successor
+ inOrder(Node):
+    if (!node)
+        return
+    inOrder(node->left)
+    if (pred)
+        node->left = pred
+        pred->right = node
+    else:
+        pred = node
+        first = node
+
+    inOrder(node->right)
+        
+
 */
+
 class Solution {
 public:
-    // the smallest (first) and the largest (last) nodes
-    Node * first = NULL;
-    Node * last = NULL;
-    
-    void helper(Node* node) {
-        if (node) {
-            helper(node->left);
-            if (last) {
-                last->right = node;
-                node->left = last;
-            } else {
-                first = node;
-            }
-            last = node;
-            // right
-            helper(node->right);
-        }
-    }
+    Node* first = NULL;
+    Node* last = NULL;
+    Node* pre = NULL;
+
     Node* treeToDoublyList(Node* root) {
-        if (!root) return NULL;
-        helper(root);
-        // close DLL
-        last->right = first;
+        if (!root) return root;
+        inOrder(root);
         first->left = last;
+        last->right = first;    
         return first;
+    }
+
+    void inOrder(Node* node) {
+        if (!node) return;
+        inOrder(node->left);
+        if (pre) {
+            node->left = pre;
+            pre->right = node;
+        } else {
+            first = node;
+        }
+        pre = node;
+        last = node;
+        inOrder(node->right);
     }
 };
