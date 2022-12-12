@@ -1,26 +1,28 @@
 class Solution {
 public:
     int countComponents(int n, vector<vector<int>>& edges) {
-        int res = n;
-        vector<int> father(n);
-        for (int i = 0; i < n; ++i)
-            father[i] = i;
-        
+        int res = 0;
+        vector<vector<int>> graph(n);
+        vector<bool> visited(n, false);
         for (auto edge : edges) {
-            int x = find(edge[0], father);
-            int y = find(edge[1], father);
-            if (x != y) {
-                father[y] = x;
-                --res;
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+        }
+        for (int i = 0; i < n; ++i) {
+            if (!visited[i]) {
+                ++res;
+                dfs(graph, visited, i);
             }
         }
-        
         return res;
     }
-    
-    int find(int x, vector<int> &father) {
-        while (x != father[x])
-            x = father[x];
-        return x;
+
+    void dfs(const vector<vector<int>>& graph, vector<bool>& visited, int i) {
+        if (visited[i]) return;
+        visited[i] = true;
+        vector<int> neighbors = graph[i];
+        for (int j : neighbors) {
+            dfs(graph, visited, j);
+        }
     }
 };
