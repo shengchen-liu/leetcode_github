@@ -1,20 +1,55 @@
 /*
-hashmap: key : ptr to a list member
-list: pair<key, val>
+key: value
+capacity: 2
 
-m:
-3 : ptr->{3, 3}
-4 : ptr->{4,4}
+1:1
+2:2
+get(1) -> 1
+1:1
+3:3
 
-list:
-{1,1}
-{1,1}, {2, 2}
-{2,2}, {1, 1}
-{1,1}, {3, 3}
-{3,3}, {4, 4}
-{4,4}, {3,3}
-{3,3}, {4,4}
+get(2) -> -1
 
+3:3
+4:4
+
+get(1) -> -1
+
+get(3)->3
+4:4 (LRU)
+3:3
+
+get(4)->4
+3:3 (LRU)
+4:4
+
+hashmap + linkedlist
+
+linkedList:
+1     ->    2  -> ....
+(LRU)
+
+hashmap: {key, ptr to the linkedlist}
+1 : p_1
+2 : p_2
+
+put(key, value):
+    if hashmap[key] not exisiting:
+        new node(value)
+        linkedlist append node
+        hashmap[key] = node
+    else:
+        node = hashmap[key]
+        node->value = value
+        move node to tail of the linkedlist
+
+get(key)
+    if hashmap[key] not exisiting:
+        return -1
+    else:
+        node = hashmap[key]
+        move node to tail of the linkedlist
+        return node->val
 
 */
 class LRUCache {
@@ -24,43 +59,36 @@ public:
     }
     
     int get(int key) {
-        // hashmap
-        // no exist, exist
-        auto it = m.find(key);  // pair<int, iterator>
+        auto it = m.find(key);
         if (it == m.end())
             return -1;
-        
-        // update list
-        l.splice(l.begin(), l, it->second);
+        ll.splice(ll.begin(), ll, it->second);
         return it->second->second;
     }
     
     void put(int key, int value) {
         auto it = m.find(key);
-        // exist
-        // update l
-        if (it != m.end()){
+        if (it != m.end()) {
             it->second->second = value;
-            // move to the front of list
-            l.splice(l.begin(), l, it->second);
+            // move to the front
+            ll.splice(ll.begin(), ll, it->second);
             return;
         }
-        // no exist
-        // reach to the max cap
-        if (l.size() == cap){
-            auto node = l.back();
+
+        if (ll.size() == cap) {
+            auto node =  ll.back();
             m.erase(node.first);
-            l.pop_back();
+            ll.pop_back();
         }
-        
+
         // insert
-        l.push_front({key, value});
-        m[key] = l.begin();            
+        ll.push_front({key, value});
+        m[key] = ll.begin();
     }
 
 private:
     int cap;
-    list<pair<int, int>> l;
+    list<pair<int, int>> ll;
     unordered_map<int, list<pair<int, int>>::iterator> m;
 };
 
