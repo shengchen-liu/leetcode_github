@@ -10,17 +10,19 @@
  */
 class Solution {
 public:
-    ListNode *reverseBetween(ListNode *head, int m, int n) {
-        ListNode *dummy = new ListNode(-1), *pre = dummy;
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        ListNode* dummy = new ListNode(0);
         dummy->next = head;
-        for (int i = 0; i < m - 1; ++i) pre = pre->next;
-        ListNode *cur = pre->next;
-        for (int i = m; i < n; ++i) {
-            ListNode *t = cur->next;
-            cur->next = t->next;
-            t->next = pre->next;
-            pre->next = t;
+        ListNode* pre = dummy;
+        for (int i = 0; i < left - 1; ++i) pre = pre->next;
+        ListNode* cur = pre->next;
+        for (int i = left; i < right; ++i) {
+            ListNode* next = cur->next;
+            cur->next = next->next;
+            next->next = pre->next;       
+            pre->next = next;
         }
         return dummy->next;
+
     }
 };
