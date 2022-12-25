@@ -1,36 +1,47 @@
+/*
+eceba, k = 2
+e   c   e   b   a      map              cnt   maxLen
+ij                     e:1              1     1
+i   j                  e:1 c:1          2     2
+i       j              e:2 c:1          2     3
+i           j          e:2 c:1 b:1      3     3
+    i       j          e:1 c:1 b:1      3     3
+        i   j          e:1 b:1          2     3
+        i       j      e:1 b:1 a:1      3     3
+            i   j      a:1 b:1          2     3
+                ij     a:1              1     3
+
+cntMap char : cnt
+j = 0
+i from 0 to n - 1:
+    while j < n and cnt <= k:
+        if (!cntMap.count(s[j]))
+            ++cnt
+        cntMap[s[j]]++
+        ++j
+    if cnt <= k:
+        maxLen = max(maxLen, j - i)
+    if cntMap[s[i]] == 1:
+        --cnt
+    cntMap[s[i]]--;
+
+*/
 class Solution {
 public:
     int lengthOfLongestSubstringKDistinct(string s, int k) {
-        if (s.size() == 0 || k == 0) {
-            return 0;
-        }
-        
-        int left = 0, right = 0, cnt = 0;
-        int char_set[256] = {0};
-        int ans = 0;
-        
-        while (right < s.size()) {
-            // 统计right指向的字符
-            // 当字符在窗口内第一次出现时，字符种类数+1，该字符出现次数+1
-            if (char_set[s[right]] == 0) {
-                cnt++;
+        unordered_map<char, int> cntMap;
+        int i = 0;
+        int maxLen = 0;
+        for (int j = 0; j < s.size(); ++j) {
+            cntMap[s[j]]++;
+            while (i <= j && cntMap.size() > k) {
+                cntMap[s[i]]--;
+                if (cntMap[s[i]] == 0)
+                    cntMap.erase(s[i]);
+                ++i;
             }
-            char_set[s[right]]++;
-            right++;
-            
-            // 向右移动left，保持窗口内只有k种不同的字符
-            while (cnt > k) {
-                char_set[s[left]]--;
-                // 当该字符在本窗口不再出现时，字符种类数-1
-                if (char_set[s[left]] == 0) {
-                    cnt--;
-                }
-                left++;
-            }
-            
-            // 更新答案
-            ans = max(ans, right - left);
+            maxLen = max(maxLen, j - i + 1);
         }
-        return ans;
+        return maxLen;
     }
 };
