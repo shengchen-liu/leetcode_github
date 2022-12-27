@@ -1,25 +1,29 @@
+/*
+[2,3,-2,4]
+2, 3, -2, 4
+
+location i: largest subarray that ends at nums[i]
+1) subarray don't contain arrays in front : nums[i]
+2) nums[i] * dp[i-1]
+max of 1) 2)
+dp[i] = max(nums[i], nums[i] * dp[i - 1])
+dp[0] = nums[0]
+*/
 class Solution {
 public:
     int maxProduct(vector<int>& nums) {
         int n = nums.size();
+        int max_sofar = nums[0];
+        int min_sofar = nums[0];
         int res = INT_MIN;
-        int max_so_far = 1;
-        int min_so_far = 1;
-
-        for (int i = 1; i <= n; ++i) {
-            int cur = nums[i - 1];
-            // max_dp[i] = max(nums[i - 1], max(max_dp[i - 1] * nums[i - 1],
-            //                                 min_dp[i - 1] * nums[i - 1]));
-            // min_dp[i] = min(nums[i - 1], min(max_dp[i - 1] * nums[i - 1],
-            //                                 min_dp[i - 1] * nums[i - 1]));
-            int temp_max = max(cur, max(max_so_far * cur, min_so_far * cur));
-            min_so_far = min(cur, min(max_so_far * cur, min_so_far * cur));
-            
-            max_so_far = temp_max;
-            res = max(max_so_far, res);
+        if (n == 1)
+            return max_sofar;
+        for (int i = 1; i < n; ++i) {
+            int tmp_max = max(nums[i], max(nums[i] * max_sofar, nums[i] * min_sofar));
+            min_sofar = min(nums[i], min(nums[i] * max_sofar, nums[i] * min_sofar));
+            max_sofar = tmp_max;
+            res = max(res, max_sofar);
         }
-        
-        
-        return res;
+        return max(nums[0], res);
     }
 };
