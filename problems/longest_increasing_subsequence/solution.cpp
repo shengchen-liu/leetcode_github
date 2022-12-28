@@ -1,29 +1,34 @@
 /*
-O(nlogn)
-dp[i]: the smallest ending number of a subsequence that has length+1
 10,9,2,5,3,7,101,18
-num      dp
-10       [10]  // [10]
-9        [9]   //  [9]
-2        [2]   // [2]
-5        [2,5]  // [2], [*, 5]
-3        [2,3]  // [2], [*, 3]
-7        [2,3,7] // [2], [*,3], [*, *, 7]
-101      [2,3,7,101] // [2], [*,3], [*,*,7], [*,*,*,101]
-18       [2,3,7,18]   //[2], [*,3], [*,*,7], [*,*,*,18]
+
+LI(i) : length of the longest subseq that ends at nums[i]
+for j 0 to i-1:
+    if (nums[j] < nums[i]):
+        len[i] = max(len[j]) + 1
+10, 9, 2, 5, 3, 7, 101, 18
+1   1  1  2  2  3  4    4
+
 */
 class Solution {
 public:
     int lengthOfLIS(vector<int>& nums) {
-        vector<int> dp;
-        for (int x : nums) {
-            auto it = lower_bound(begin(dp), end(dp), x); // find the 1st elem that is >= x
-            if (it == end(dp)){
-                dp.push_back(x);
-            } else {
-                *it = x;
+        int n = nums.size();
+        int res = 1;
+        vector<int> len(n, 1);
+        if (n == 1)
+            return 1;
+        for (int i = 1; i < n; ++i) {
+            int tmp = 1;
+            for (int j = 0; j < i; ++j) {
+                if (nums[j] < nums[i]) {
+                    tmp = max(tmp, len[j] + 1);
+                }
             }
+            len[i] = tmp;
         }
-        return dp.size();
+        for (int i = 0; i < n; ++i) {
+            res = max(res, len[i]);
+        }
+        return res;
     }
 };
