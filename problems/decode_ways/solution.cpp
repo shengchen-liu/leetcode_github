@@ -1,25 +1,27 @@
 class Solution {
 public:
     int numDecodings(string s) {
-        int n = s.size();
-        if (n == 0) return 0;
-        vector<int> dp(n + 1);
-        // int num = (s[0] - '0') + (s[1] - '0'); 
-        dp[0] = 1;
-        dp[1] = (s[0] - '0' > 0) ? 1 : 0;
-        
-        for (int i = 2; i <= n; ++i) {
-            // i'th element in s => s[i - 1]
-            if (s[i - 1] != '0') {
-                dp[i] = dp[i - 1];
-            }
-            
-            int num = (s[i - 2] - '0') * 10 + (s[i - 1] - '0');
-            if (num <= 26 && num >= 10) {
-                dp[i] += dp[i - 2];
-            }
+        if (s[0] == '0') {
+            return 0;
         }
-        
-        return dp[n];
+
+        size_t n = s.length();
+        int two_back = 1;
+        int one_back = 1;
+
+        for (size_t i = 1; i < n; i++) {
+            int current = 0;
+            if (s[i] != '0') {
+                current = one_back;
+            }
+            int two_digit = stoi(s.substr(i - 1, 2));
+            if (two_digit >= 10 and two_digit <= 26) {
+                current += two_back;
+            }
+
+            two_back = one_back;
+            one_back = current;
+        }
+        return one_back;
     }
 };
