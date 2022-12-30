@@ -1,21 +1,28 @@
+/*
+use houseRobber1 twice:
+houseRobber1 on [1...n-1]
+houseRobber1 on [2...n]
+compare two res
+*/
 class Solution {
 public:
     int rob(vector<int>& nums) {
-         int size = nums.size();
-        if (size == 0) {
-            return 0;
-        }
-        if (size == 1) {
+        int n = nums.size();
+        if (n == 1)
             return nums[0];
+        int r1 = houseRobber1(nums, 0, n - 2);
+        int r2 = houseRobber1(nums, 1, n - 1);
+        return max(r1, r2);
+    }
+
+    int houseRobber1(vector<int>& nums, int start, int end) {
+        int cur = 0;
+        int pre = 0;
+        for (int i = start; i <= end; ++i) {
+            int tmp = cur;
+            cur = max(cur, pre + nums[i]);
+            pre = tmp;
         }
-        vector<int> L(size,0),R(size,0);
-        L[1] = nums[0];
-        R[1] = nums[1];
-        for (int i = 2;i < size;i++) {
-            //递推公式，注意nums中数的顺序先后
-            L[i] = max(L[i - 2] + nums[i - 1],L[i - 1]);
-            R[i] = max(R[i - 2] + nums[i],  R[i - 1]);
-        }
-        return max(L[size - 1],R[size - 1]);//取较大值
+        return cur;
     }
 };
