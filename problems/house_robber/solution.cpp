@@ -3,13 +3,14 @@ public:
     int rob(vector<int>& nums) {
         if (nums.size() == 0) return 0;
         int n = nums.size();
-        vector<int> dp(n + 1, 0);
-        dp[0] = 0;
-        dp[1] = nums[0];
-        for (int i = 2; i <= n; ++i) {
-            dp[i] = max(dp[i - 1], dp[i - 2] + nums[i - 1]);
+        int preMax = 0;
+        int curMax = 0;
+        for (int i = 0; i < n; ++i) {
+            int tmp = curMax;
+            curMax = max(curMax, preMax + nums[i]);
+            preMax = tmp;
         }
         
-        return dp[n];
+        return curMax;
     }
 };
