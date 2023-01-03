@@ -1,28 +1,30 @@
 /*
-deque: store idx.  Values in ascending order.  Only push new idx into the dequeu if its value >= deque's last element value
+2 1 5 6 2 3
+
+monotonic stack:  only keep increasing heights
+for each height:
+    if height >= st.top:
+        st.push(height)
+    else:
+        until st.top > height or st.empty:
+            compute area(cur, st.top)
+            updat maxArea
 */
 class Solution {
 public:
     int largestRectangleArea(vector<int>& heights) {
-        deque<int> dq;
-        dq.push_back(-1);
-        int n = heights.size();
-        int maxArea = 0;
-        for (int i = 0; i < n; ++i) {
-            while (dq.back() != -1 && heights[dq.back()] >= heights[i]) {
-                int curHeight = heights[dq.back()];
-                dq.pop_back();
-                int curWidth = i - dq.back() - 1;
-                maxArea = max(maxArea, curHeight * curWidth);
+        int res = 0;
+        stack<int> st;
+        heights.push_back(0);
+
+        for (int i = 0; i < heights.size(); ++i) {
+            while (!st.empty() && heights[st.top()] >= heights[i]) {
+                int cur = st .top();
+                st.pop();
+                res = max(res, heights[cur] * (st.empty() ? i : (i - st.top() - 1)));
             }
-            dq.push_back(i);
+            st.push(i);
         }
-        while (dq.back() != -1) {
-            int curHeight = heights[dq.back()];
-            dq.pop_back();
-            int curWidth = n - dq.back() - 1;
-            maxArea = max(maxArea, curHeight * curWidth);
-        }
-        return maxArea;
+        return res;
     }
 };
