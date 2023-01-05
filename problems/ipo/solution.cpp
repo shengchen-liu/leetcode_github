@@ -1,22 +1,26 @@
 class Solution {
 public:
-    int findMaximizedCapital(int k, int W, vector<int>& Profits, vector<int>& Capital) {
-        priority_queue<pair<int, int>> maxH;  // [profit, capital], sort by profit
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> minH; // sort by capital, the smallest capital is on the top of min heap
-        for (int i = 0; i < Capital.size(); ++i) {
-            minH.push({Capital[i], Profits[i]});
+    int findMaximizedCapital(int k, int w, vector<int>& profits, vector<int>& capital) {
+        int n = profits.size();
+        vector<pair<int, int>> projects;
+        for (int i = 0; i < n; ++i) {
+            projects.push_back({capital[i], profits[i]});
         }
-        
+        sort(projects.begin(), projects.end());
+        priority_queue<int> pq;
+        int ptr = 0;
         for (int i = 0; i < k; ++i) {
-            while (!minH.empty() && minH.top().first <= W) {
-                auto t = minH.top();
-                minH.pop();
-                maxH.push({t.second, t.first});
+            // find all cap <= w
+            while (ptr < n && projects[ptr].first <= w) {
+                pq.push(projects[ptr].second);
+                ++ptr;
             }
-            if (maxH.empty()) break;
-            W += maxH.top().first;
-            maxH.pop();
+            // get the largest profit
+            if (pq.empty())
+                break;
+            w += pq.top();
+            pq.pop();
         }
-        return W;
+        return w;
     }
 };
