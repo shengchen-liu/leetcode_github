@@ -1,37 +1,36 @@
 class Solution {
 public:
-vector<double> medianSlidingWindow(vector<int>& nums, int k)
-{
-    vector<double> medians;
-    multiset<int> lo, hi;
+    vector<double> medianSlidingWindow(vector<int>& nums, int k) {
+        int n = nums.size();
+        multiset<int> low;
+        multiset<int> high;
+        vector<double> medians;
 
-    for (int i = 0; i < nums.size(); i++) {
-        //remove outgoing element
-        if (i >= k) {
-            if (nums[i - k] <= *lo.rbegin())
-                lo.erase(lo.find(nums[i - k]));
-            else
-                hi.erase(hi.find(nums[i - k]));
+        for (int i = 0; i < n; ++i) {
+            // remove outgoing
+            if (i >= k) {
+                if (nums[i - k] <= *low.rbegin())
+                    low.erase(low.find(nums[i - k]));
+                else 
+                    high.erase(high.find(nums[i - k]));
+            }
+
+            // add new num
+            low.insert(nums[i]);
+            high.insert(*low.rbegin());
+            low.erase(prev(low.end()));
+
+            if (high.size() > low.size()) {
+                low.insert(*high.begin());
+                high.erase(high.begin());
+            }
+
+            // get median
+            if (i >= k - 1) {
+                medians.push_back(low.size() > high.size() ? (double) *low.rbegin() : 0.5 * ((double) (*low.rbegin()) + (double) (*high.begin())));
+            }
         }
+        return medians;
 
-        // insert incoming element
-        lo.insert(nums[i]);
-
-        // balance the sets
-        hi.insert(*lo.rbegin());
-        lo.erase(prev(lo.end()));
-
-        if (lo.size() < hi.size()) {
-            lo.insert(*hi.begin());
-            hi.erase(hi.begin());
-        }
-
-        // get median
-        if (i >= k - 1) {
-            medians.push_back(k & 1 ? *lo.rbegin() : ((double)(*lo.rbegin()) + (double)(*hi.begin())) * 0.5);
-        }
     }
-
-    return medians;
-}
 };
