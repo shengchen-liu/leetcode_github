@@ -4,87 +4,54 @@ class Node {
 public:
     int val;
     vector<Node*> neighbors;
-    
     Node() {
         val = 0;
         neighbors = vector<Node*>();
     }
-    
     Node(int _val) {
         val = _val;
         neighbors = vector<Node*>();
     }
-    
     Node(int _val, vector<Node*> _neighbors) {
         val = _val;
         neighbors = _neighbors;
     }
 };
-
-1(pt1) -> 2(pt2)
-|
-4(pt4)
-
-return:
-1(pta) -> 2(ptb)
-|
-4(ptd)
-
-deepcopy:
-1. a new node
-2. copy value
-3. neighbors of new nodes
-
-hashmap: {old node : new node}
-oldNode->val
-create a newNode(val)
-newNode->neighbor = oldNode->neigbor
-1(pta) -> 2(pt2)
-1(pta) -> 2(ptb)
-
-for each node in newNode's neighbor:
-    node = hashmap(node)
-    
 */
 
+/*
+dfs: start at cur node, search for all connected nodes
+dfs(cur, visited):
+    if visited.count(cur)
+        return
+    newNode
+    m[cur] = newNode
+    for each neighbor:
+        visited.insert(neighbor)
+        dfs(neighbor, visited)
+*/
 class Solution {
 public:
     Node* cloneGraph(Node* node) {
-        if (!node) return NULL;
-        
-        // create new nodes, hashmap
         unordered_map<Node*, Node*> m;
+        if (!node)
+            return NULL;
         
-        // BFS to find all old nodes
-        queue<Node*> q;
-        q.push(node);
-        unordered_set<Node*> visited;
-        visited.insert(node);
-        while(!q.empty()) {
-            Node* cur = q.front();
-            q.pop();
-            // check its neighbors
-            for (Node* neigh : cur->neighbors) {
-                if (visited.count(neigh))
-                    continue;
-                visited.insert(neigh);
-                q.push(neigh);
+        Node* newNode = dfs(node, m);
+        return newNode;
+    }
+    
+    Node* dfs(Node* cur, unordered_map<Node*, Node*>& m) {
+        if (!cur)
+            return NULL;
+        if (m.find(cur) == m.end()) {
+            Node* newCur = new Node(cur->val);
+            m[cur] = newCur;
+            for (auto neighbor : cur->neighbors) {
+                m[cur]->neighbors.push_back(dfs(neighbor, m));
             }
         }
-        
-        // build new nodes, mapping
-        for (Node* a : visited) {
-            m[a] = new Node(a->val);
-        }
-        
-        // deep copy neighbors
-        for (Node* old : visited) {
-            Node* new_node = m[old];
-            for (Node* old_neigh : old->neighbors) {
-                new_node->neighbors.push_back(m[old_neigh]);
-            }
-        }
-        
-        return m[node];
+
+        return m[cur];
     }
 };
