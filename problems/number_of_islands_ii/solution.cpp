@@ -57,12 +57,7 @@ public:
                 int cur_id = n * x1 + y1;
                 if (x1 < 0 || x1 > m - 1 || y1 < 0 || y1 > n - 1 || roots[cur_id] == -1)
                     continue;
-                int p = findRoot(roots, cur_id);
-                int q = findRoot(roots, idx);
-                if (p != q){
-                    roots[p] = q;
-                    --cnt;
-                }
+                merge(idx, cur_id, roots, cnt);
             }
             res.push_back(cnt);
         }
@@ -74,5 +69,14 @@ public:
             return id;
         roots[id] = findRoot(roots, roots[id]);
         return roots[id];
+    }
+
+    void merge(int i, int j, vector<int>& roots, int& cnt) {
+        int p = findRoot(roots, i);
+        int q = findRoot(roots, j);
+        if (p != q){
+            roots[p] = q;
+            --cnt;
+        }
     }
 };
