@@ -1,20 +1,38 @@
+/*
+[1,3],[6,9]
+
+1 2 3 4 5 6 7 8 9 10
+- - -     - - - -
+  x x x x
+
+- - - - -
+          - - - -
+
+
+find overlapping regions
+for each interval:
+    1) ei <= s* : no overlap.  keep interval i
+    2) si >= e* : no overlap, keep interval
+    3) others:  s = min(si, s*); e = max(ei, e*)
+*/
 class Solution {
 public:
     vector<vector<int>> insert(vector<vector<int>>& intervals, vector<int>& newInterval) {
-        int n = intervals.size(); // 2
+        int n = intervals.size();
         vector<vector<int>> res;
-        int cur = 0; // location to insert new interval
-        for (int i = 0; i < n; ++i) { // i = 0
-            if(intervals[i][1] < newInterval[0]) {
-                res.push_back(intervals[i]);
-                ++cur;
-            } else if (intervals[i][0] > newInterval[1]){
-                res.push_back(intervals[i]);
-            } else {
-                //[min(a[0], b[0]), max(a[1], b[1])]
-                newInterval[0] = min(intervals[i][0], newInterval[0]);
-                newInterval[1] = max(intervals[i][1], newInterval[1]);
-            }
+        int cur = 0;  // location to insert the new interval
+        for (auto interval : intervals) {
+          int si = interval[0];
+          int ei = interval[1];
+          if (ei < newInterval[0]) {
+            res.push_back(interval);
+            ++cur;
+          } else if (si > newInterval[1]){
+            res.push_back(interval);
+          } else {
+            newInterval[0] = min(si, newInterval[0]);
+            newInterval[1] = max(ei, newInterval[1]);
+          }
         }
         res.insert(res.begin() + cur, newInterval);
         return res;
