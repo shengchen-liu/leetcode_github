@@ -1,3 +1,7 @@
+/*
+[10,50],[60,120],[140,210]
+[0,15],[60,70]
+*/
 class Solution {
 public:
     vector<int> minAvailableDuration(vector<vector<int>>& slots1, vector<vector<int>>& slots2, int duration) {
