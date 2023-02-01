@@ -11,26 +11,32 @@
 class Solution {
 public:
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        auto comp =  [](ListNode* l1, ListNode* l2) {
-            return l1->val > l2->val; 
-        };
-        
-        priority_queue<ListNode*, vector<ListNode*>, decltype(comp)> q(comp); // min heap
-        for (auto l : lists) {
-            if (l) q.push(l);
+        if (lists.empty()) return NULL;
+        int n = lists.size();
+        while (n > 1) {
+            int k = (n + 1) / 2;
+            for (int i = 0; i < n / 2; ++i) {
+                lists[i] = mergeTwoLists(lists[i], lists[i + k]);
+            }
+            n = k;
         }
-        if (q.empty()) return NULL;
-        
-        ListNode* res = q.top();
-        q.pop();
-        if (res->next) q.push(res->next);
-        ListNode *tail = res;
-        while (!q.empty()) {
-            tail->next = q.top();
-            q.pop();
-            tail = tail->next;
-            if (tail->next) q.push(tail->next);
+        return lists[0];
+    }
+    
+    ListNode* mergeTwoLists(ListNode *l1, ListNode *l2) {
+        ListNode *dummy = new ListNode(-1);
+        ListNode *cur = dummy;
+        while (l1 && l2) {
+            if (l1->val <= l2->val) {
+                cur->next = l1;
+                l1 = l1->next;
+            } else {
+                cur->next = l2;
+                l2 = l2->next;
+            }
+            cur = cur->next;
         }
-        return res;
+        cur->next = l1 ? l1 : l2;
+        return dummy->next;
     }
 };
