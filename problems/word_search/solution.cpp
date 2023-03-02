@@ -1,25 +1,34 @@
 class Solution {
 public:
     bool exist(vector<vector<char>>& board, string word) {
-        if (board.empty() || board[0].empty()) return false;
-        int m = board.size(), n = board[0].size();
-        vector<vector<bool>> visited(m, vector<bool>(n));
+        int m = board.size();
+        int n = board[0].size();
+        vector<vector<bool>> visited (m, vector<bool>(n));
+
         for (int i = 0; i < m; ++i) {
             for (int j = 0; j < n; ++j) {
-                if (search(board, word, 0, i, j, visited)) return true;
+                if (visited[i][j])
+                    continue;
+                if (dfs(i, j, board, word, 0, visited))
+                    return true;
             }
         }
         return false;
     }
-    bool search(vector<vector<char>>& board, string word, int idx, int i, int j, vector<vector<bool>>& visited) {
-        if (idx == word.size()) return true;
-        int m = board.size(), n = board[0].size();
-        if (i < 0 || j < 0 || i >= m || j >= n || visited[i][j] || board[i][j] != word[idx]) return false;
+
+    bool dfs(int i, int j, const vector<vector<char>>& board, string word, int k, vector<vector<bool>> &visited){
+        int m = board.size();
+        int n = board[0].size();
+        if (k == word.size())
+            return true;
+        if (i < 0 || i >= m || j < 0 || j >= n || visited[i][j] || board[i][j] != word[k]) 
+            return false;
+
         visited[i][j] = true;
-        bool res = search(board, word, idx + 1, i - 1, j, visited) 
-                 || search(board, word, idx + 1, i + 1, j, visited)
-                 || search(board, word, idx + 1, i, j - 1, visited)
-                 || search(board, word, idx + 1, i, j + 1, visited);
+        bool res = dfs(i + 1, j, board, word, k + 1, visited) ||
+                    dfs(i - 1, j, board, word, k + 1, visited) ||
+                    dfs(i, j + 1, board, word, k + 1, visited) ||
+                    dfs(i, j - 1, board, word, k + 1, visited);
         visited[i][j] = false;
         return res;
     }
